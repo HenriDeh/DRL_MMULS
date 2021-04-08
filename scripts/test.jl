@@ -7,15 +7,15 @@ env = sl_sip(1,10,1280,0.4,0,Uniform(1,19), 52, Uniform(0,30))
 test_env = sl_sip(1,10,1280,0.4,0,fill(10,52), 0, pad = false)
 ins = Instance(test_env, .99)
 scarf_SDP(ins)
-test_policy(test_env, collect(Iterators.flatten(zip(ins.s, ins.S))))
+test_policy(test_env, collect(Iterators.flatten(zip(ins.s, ins.S))), 10000)
 reset!(test_env)
 
-agent = PPOPolicy(env, actor_optimiser = ADAM(1f-4), critic_optimiser = ADAM(1f-2), n_hidden = 64,
-γ = 0.99f0,λ = 0.95f0, clip_range = 0.2f0, entropy_weight = 1f-1, n_actors = 100, n_epochs = 40, batch_size = 32,
-target_function = TDλ_target)
+agent = PPOPolicy(env, actor_optimiser = ADAM(1f-4), critic_optimiser = ADAM(1f-1), n_hidden = 64,
+γ = 0.99f0,λ = 0.95f0, clip_range = 0.2f0, entropy_weight = 1f-1, n_actors = 100, n_epochs = 40, batch_size = 16,
+target_function = TDλ_target, device = gpu)
 
 hook = Hook(
-    TestEnvironment(test_env, 1000, 20),
+    TestEnvironment(test_env, 2000, 50),
     EntropyAnnealing(LinRange(1f-1,-1f-1, 3000))
 )
 
@@ -23,7 +23,7 @@ run(agent, env; stop_iterations = 3000, hook = hook)
 
 
 plot(plot(agent.loss_actor[1:end], label = "", title = "actor"), plot(agent.loss_entropy[1:end], label = "", title = "entropy"), 
-    plot(sqrt.(agent.loss_critic[1:end]), label = "", title = "critic", yscale = :log10), plot(hook.hooks[1].log, label = "", title = "return"))
+    plot(sqrt.(agent.loss_critic[1:end]), label = "", title = "critic", yscale = :log10), plot(hook.hooks[1].log[50:end], label = "", title = "return"))
 
 print(state(test_env)[[begin, end]], agent.actor(state(test_env)), agent.critic(state(test_env)))
 

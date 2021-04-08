@@ -7,7 +7,7 @@ import Flux: mse
 const log2π =  Float32(log(2π))
 const nentropyconst = Float32((log2π + 1)/2)
 
-mutable struct PPOPolicy{A, AO, C, CO,T}
+mutable struct PPOPolicy{A, AO, C, CO,T,D}
     actor::A
     actor_optimiser::AO
     critic::C
@@ -24,43 +24,7 @@ mutable struct PPOPolicy{A, AO, C, CO,T}
     loss_actor::Vector{Float32}
     loss_critic::Vector{Float32}
     loss_entropy::Vector{Float32}
-end
-
-struct PPOTrajectory
-    state::CircularArrayBuffer{Float32,2}
-    action::CircularArrayBuffer{Float32,2}
-    reward::CircularArrayBuffer{Float32,2}
-    next_state::CircularArrayBuffer{Float32,2}
-    action_log_prob::CircularArrayBuffer{Float32,2}
-    advantage::CircularArrayBuffer{Float32,2}
-    target_value::CircularArrayBuffer{Float32,2}
-end
-
-function PPOTrajectory(N, state_size, action_size)
-    PPOTrajectory(
-        CircularArrayBuffer{Float32}(state_size, N),
-        CircularArrayBuffer{Float32}(action_size, N),
-        CircularArrayBuffer{Float32}(1, N),
-        CircularArrayBuffer{Float32}(state_size, N),
-        CircularArrayBuffer{Float32}(action_size, N),
-        CircularArrayBuffer{Float32}(1, N),
-        CircularArrayBuffer{Float32}(1, N)
-    )
-end
-
-function Base.rand(t::PPOTrajectory, n::Int)
-    idx = rand(1:size(t.action)[2], n)
-    t.state[:,idx], t.action[:,idx], t.action_log_prob[:,idx], t.advantage[:,idx], t.target_value[:,idx]
-end
-
-function Base.empty!(t::PPOTrajectory)
-    empty!(t.state)
-    empty!(t.action)
-    empty!(t.reward)
-    empty!(t.next_state)
-    empty!(t.action_log_prob)
-    empty!(t.advantage)
-    empty!(t.target_value)
+    device::D
 end
 
 function compute_advantages!(A, δ, λ, γ)
@@ -73,11 +37,11 @@ function compute_advantages!(A, δ, λ, γ)
 end
 
 function TD1_target(trajectory, agent)
-    push!(trajectory.target_value, (trajectory.reward.buffer .+ agent.critic(trajectory.next_state.buffer) .- agent.critic(trajectory.state.buffer))...)
+    trajectory.traces[:reward] .+ agent.critic(trajectory.traces[:next_state]) .- agent.critic(trajectory.traces[:state])
 end
 
 function TDλ_target(trajectory, agent)
-    push!(trajectory.target_value, (trajectory.advantage.buffer .+ agent.critic(trajectory.state.buffer))...)
+    trajectory.traces[:advantage] .+ agent.critic(trajectory.traces[:state])
 end
 
 function normlogpdf(μ, σ, x; ϵ = eps(Float32))
@@ -89,7 +53,7 @@ normentropy(σ, ϵ = eps(Float32)) = nentropyconst + log(σ + ϵ)
 
 function L_clip(agent, state, action, advantage, log_prob_old)
     μ, σ = agent.actor(state)
-    log_prob_new = normlogpdf.(μ, σ, action)
+    log_prob_new = normlogpdf(μ, σ, action)
     ratio = exp.(log_prob_new .- log_prob_old)
     loss_actor = -mean(min.(ratio .* advantage, clamp.(ratio, 1f0-agent.clip_range, 1f0+agent.clip_range) .* advantage))
     loss_entropy = -mean(normentropy.(σ))*agent.entropy_weight
@@ -111,10 +75,11 @@ end
 function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing)
     N = agent.n_actors
     T = agent.n_steps
+    device = agent.device
     envs = [deepcopy(env) for _ in 1:agent.n_actors]
     advantages = Float32.(zeros(agent.n_actors, agent.n_steps)) # Agent x Periods -> flatten corresponds to trajectory
     δ = similar(advantages)
-    trajectory = PPOTrajectory(N*T, state_size(env), action_size(env))
+    trajectory = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
     prog = Progress(stop_iterations)
     showtest = () -> "No test environment"
     if hook.hooks isa Tuple
@@ -130,26 +95,26 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         advantages .= 0f0
         reset!.(envs)
         for t in 1:agent.n_steps
-            states = reduce(hcat, state.(envs))
+            states = reduce(hcat, state.(envs)) |> device
             μ, σ = agent.actor(states)
-            z = randn(size(σ))
-            actions = μ .+ σ .* z
-            action_log_probs = normlogpdf.(μ, σ, actions)
-            push!(trajectory.state, eachcol(states)...)
-            push!(trajectory.action, eachcol(actions)...)
-            push!(trajectory.action_log_prob, eachcol(action_log_probs)...)
-            for (env, action) in zip(envs, eachcol(actions))
+            z = randn(size(σ)) |> device
+            actions = μ .+ σ .* z 
+            action_log_probs = normlogpdf(μ, σ, actions)
+            push!(trajectory, states, :state)
+            push!(trajectory, actions, :action)
+            push!(trajectory, action_log_probs, :action_log_prob)
+            for (env, action) in zip(envs, eachcol(cpu(actions)))
                 env(collect(action))
             end
-            rewards = reshape(reward.(envs), 1, :)
-            push!(trajectory.reward, eachcol(rewards)...)
-            next_states = reduce(hcat, state.(envs))
-            push!(trajectory.next_state, eachcol(next_states)...)
-            δ[:,t] = reshape(agent.γ .* agent.critic(next_states) .+ rewards .- agent.critic(states), :, 1)
+            rewards = reshape(reward.(envs), 1, :) |> device
+            push!(trajectory, rewards, :reward)
+            next_states = reduce(hcat, state.(envs)) |> device
+            push!(trajectory, next_states, :next_state)
+            δ[:,t] = reshape((agent.γ .* agent.critic(next_states) .+ rewards .- agent.critic(states)) |> cpu, :, 1)
         end
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
-        push!(trajectory.advantage, reshape(advantages, 1, :)...)
-        agent.target_function(trajectory, agent)
+        push!(trajectory, reshape(advantages, 1, :) |> device, :advantage) 
+        push!(trajectory, agent.target_function(trajectory, agent), :target_value)
         for i in 1:agent.n_epochs
             s, a, alp, ad, tv = rand(trajectory, agent.batch_size)
             psa = Flux.params(agent.actor)

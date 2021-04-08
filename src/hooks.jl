@@ -37,12 +37,12 @@ function (te::TestEnvironment)(agent::PPOPolicy, envi; stochastic = false)
     reset!(envi)
     envs = [deepcopy(te.env) for _ in 1:te.n_sim]
     while all(map(!, is_terminated.(envs)))
-        s = reduce(hcat, state.(envs))
+        s = reduce(hcat, state.(envs)) |> agent.device
         a, σ = agent.actor(s)
         if stochastic
-            a .+= σ .* randn(size(σ)...)
+            a .+= σ .* (randn(size(σ)...) |> agent.device)
         end
-        for (env, action) in zip(envs, eachcol(a))
+        for (env, action) in zip(envs, eachcol(cpu(a)))
             env(collect(action))
         end
         totreward += sum(reward.(envs))

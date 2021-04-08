@@ -20,7 +20,8 @@ function PPOPolicy(
     n_epochs::Int, 
     batch_size::Int, 
     target_function = TD1_target,
-    n_hidden::Int)
+    n_hidden::Int,
+    device = cpu)
     actor = Chain(
         Dense(state_size(env), n_hidden, relu),
         Dense(n_hidden, n_hidden, relu),
@@ -29,14 +30,14 @@ function PPOPolicy(
             Dense(n_hidden, action_size(env)),
             Dense(n_hidden, action_size(env), softplus)
             )
-    )
+    ) |> device
 
     critic = Chain(
         Dense(state_size(env), n_hidden, relu),
         Dense(n_hidden, n_hidden, relu),
         Dense(n_hidden, n_hidden, relu),
         Dense(n_hidden, 1)
-    )
+    ) |> device
 
     PPOPolicy(
         actor,
@@ -54,6 +55,7 @@ function PPOPolicy(
         target_function,
         Float32[],
         Float32[],
-        Float32[]
+        Float32[],
+        device
     )
 end
