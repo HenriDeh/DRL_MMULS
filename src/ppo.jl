@@ -120,6 +120,6 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         end
         hook(agent, env)
         empty!(trajectory)
-        next!(prog, showvalues = [show_value(hook)..., ("Actor loss ", last(agent.loss_actor)), ("Entropy loss ", last(agent.loss_entropy)), ("Critic loss", last(agent.loss_critic))])
+        next!(prog, showvalues = [("Iteration ", it), show_value(hook)..., ("Actor loss ", last(agent.loss_actor)), ("Entropy loss ", last(agent.loss_entropy)), ("Critic loss", last(agent.loss_critic))])
     end
 end

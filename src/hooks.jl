@@ -16,7 +16,7 @@ end
 
 EntropyAnnealing(lr::LinRange) = EntropyAnnealing(lr[1] - lr[2], last(lr))
 
-show_value(ea::EntropyAnnealing) = ()
+show_value(ea::EntropyAnnealing) = ("Entropy annealing to ", ea.target)
 
 function (ea::EntropyAnnealing)(agent::PPOPolicy, env) 
     if agent.entropy_weight > ea.target
