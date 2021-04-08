@@ -81,18 +81,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     δ = similar(advantages)
     trajectory = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
     prog = Progress(stop_iterations)
-    showtest = () -> "No test environment"
-    if hook.hooks isa Tuple
-        for h in hook.hooks
-            if h isa TestEnvironment
-                showtest = () -> string("Test environment return: ", last(h.log))
-            end
-        end
-    elseif hook.hooks isa TestEnvironment
-        showtest = () -> string("Test environment return = ", last(hook.hooks.log))
-    end
     for it in 1:stop_iterations
-        advantages .= 0f0
         reset!.(envs)
         for t in 1:agent.n_steps
             states = reduce(hcat, state.(envs)) |> device
@@ -131,6 +120,6 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         end
         hook(agent, env)
         empty!(trajectory)
-        next!(prog, showvalues = [("$it ", showtest()), ("Actor loss ", last(agent.loss_actor)), ("Entropy loss ", last(agent.loss_entropy)), ("Critic loss", last(agent.loss_critic))])
+        next!(prog, showvalues = [show_value(hook)..., ("Actor loss ", last(agent.loss_actor)), ("Entropy loss ", last(agent.loss_entropy)), ("Critic loss", last(agent.loss_critic))])
     end
 end
