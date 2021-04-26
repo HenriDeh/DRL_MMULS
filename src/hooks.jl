@@ -1,9 +1,10 @@
+show_value(::Any) = [("No ", "hook")]
+
 struct Hook{H<:Tuple}
     hooks::H
 end
 
 Hook(hooks...) = Hook{typeof(hooks)}(hooks)
-Hook(hooks::Tuple) = Hook{typeof(hooks)}(hooks)
 
 (h::Hook)(agent, env) = for hook in h.hooks hook(agent,env) end
 
