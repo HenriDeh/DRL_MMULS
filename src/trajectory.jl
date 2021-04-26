@@ -6,14 +6,15 @@ mutable struct PPOTrajectory{A <: AbstractArray}
 end
 
 function PPOTrajectory(N, state_size, action_size; device = cpu)
+    T = device == gpu ? Float32 : Float64
     PPOTrajectory(
-        (state = zeros(Float32, state_size, N) |> device,
-        action = zeros(Float32, action_size, N) |> device,
-        reward = zeros(Float32, 1, N) |> device,
-        next_state = zeros(Float32, state_size, N) |> device,
-        action_log_prob = zeros(Float32, action_size, N) |> device,
-        advantage = zeros(Float32, 1, N) |> device,
-        target_value = zeros(Float32, 1, N) |> device),
+        (state = zeros(T, state_size, N) |> device,
+        action = zeros(T, action_size, N) |> device,
+        reward = zeros(T, 1, N) |> device,
+        next_state = zeros(T, state_size, N) |> device,
+        action_log_prob = zeros(T, action_size, N) |> device,
+        advantage = zeros(T, 1, N) |> device,
+        target_value = zeros(T, 1, N) |> device),
         Dict(:state => 1, :action => 1, :reward => 1, :next_state => 1, :action_log_prob => 1, :advantage => 1, :target_value => 1),
         N
     )
@@ -37,8 +38,8 @@ function Base.empty!(t::PPOTrajectory)
     end
 end
 
-function Base.push!(t::PPOTrajectory{A}, data::A, trace::Symbol) where {A}
+function Base.push!(t::PPOTrajectory{A}, data::B, trace::Symbol) where {A <: AbstractMatrix, B <: AbstractMatrix}
     T = size(data)[2]
-    t.traces[trace][:,t.idx[trace]:t.idx[trace] + T - 1] .= data
+    t.traces[trace][:,t.idx[trace]:t.idx[trace] + T - 1] .= A(data)
     t.idx[trace] += T
 end

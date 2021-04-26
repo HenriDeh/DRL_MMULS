@@ -1,7 +1,5 @@
 #import ReinforcementLearningZoo: PPOTrajectory, CircularArraySARTTrajectory, Trajectory, CircularArrayTrajectory
 using Statistics, Flux, ProgressMeter
-import ReinforcementLearningCore.Agent
-import CircularArrayBuffers: CircularArrayBuffer
 import Flux: mse
 
 const log2π =  Float32(log(2π))
@@ -29,11 +27,9 @@ end
 
 function compute_advantages!(A, δ, λ, γ)
     T = size(δ)[2]
-    for t in 1:T
-        for l in 0:T-t
-            @inbounds A[:, t] += (λ*γ)^l .* δ[:,t+l]
-        end
-    end
+    ls = typeof(δ)(getindex.(CartesianIndices(δ), 2))
+    A .= δ
+    reverse!((λ*γ) .^(ls) .* cumsum((λ*γ) .^(.- ls) .* reverse!(δ, dims = 2), dims = 2), dims= 2)
 end
 
 function TD1_target(trajectory, agent)
@@ -45,8 +41,7 @@ function TDλ_target(trajectory, agent)
 end
 
 function normlogpdf(μ, σ, x; ϵ = eps(Float32))
-    z = (x .- μ) ./ (σ .+ ϵ)
-    -(z .^ 2 .+ log2π) / 2.0f0 .- log.(σ .+ ϵ)
+    -(((x .- μ) ./ (σ .+ ϵ)) .^ 2 .+ log2π) / 2.0f0 .- log.(σ .+ ϵ)
 end
 
 normentropy(σ, ϵ = eps(Float32)) = nentropyconst + log(σ + ϵ)
@@ -76,33 +71,42 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     N = agent.n_actors
     T = agent.n_steps
     device = agent.device
-    envs = [deepcopy(env) for _ in 1:agent.n_actors]
-    advantages = Float32.(zeros(agent.n_actors, agent.n_steps)) # Agent x Periods -> flatten corresponds to trajectory
+    envs = [deepcopy(env) for _ in 1:N]
+    #Memory preallocations
+    advantages = zeros(N, T) |> device # Agent x Periods -> flatten corresponds to trajectory
     δ = similar(advantages)
+    states = zeros(state_size(env), N) |> device
+    actions = zeros(action_size(env), N) |> device
+    rewards = zeros(1, N) |> device
+    next_states = similar(states)
+    μ = similar(actions)
+    σ = similar(actions)
+    z = similar(actions)
+    action_log_probs = similar(actions)
     trajectory = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
     prog = Progress(stop_iterations)
     for it in 1:stop_iterations
         reset!.(envs)
         for t in 1:agent.n_steps
-            states = reduce(hcat, state.(envs)) |> device
+            states .= reduce(hcat, state.(envs)) |> device
             μ, σ = agent.actor(states)
-            z = randn(size(σ)) |> device
-            actions = μ .+ σ .* z 
-            action_log_probs = normlogpdf(μ, σ, actions)
+            z .= randn(size(σ)) |> device
+            actions .= μ .+ σ .* z 
+            action_log_probs .= normlogpdf(μ, σ, actions)
             push!(trajectory, states, :state)
             push!(trajectory, actions, :action)
             push!(trajectory, action_log_probs, :action_log_prob)
             for (env, action) in zip(envs, eachcol(cpu(actions)))
                 env(collect(action))
             end
-            rewards = reshape(reward.(envs), 1, :) |> device
+            rewards .= reshape(reward.(envs), 1, :) |> device
             push!(trajectory, rewards, :reward)
-            next_states = reduce(hcat, state.(envs)) |> device
+            next_states .= reduce(hcat, state.(envs)) |> device
             push!(trajectory, next_states, :next_state)
-            δ[:,t] = reshape((agent.γ .* agent.critic(next_states) .+ rewards .- agent.critic(states)) |> cpu, :, 1)
+            δ[:,t] = reshape((agent.γ .* agent.critic(next_states) .+ rewards .- agent.critic(states)), :, 1)
         end
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
-        push!(trajectory, reshape(advantages, 1, :) |> device, :advantage) 
+        push!(trajectory, reshape(advantages, 1, :), :advantage) 
         push!(trajectory, agent.target_function(trajectory, agent), :target_value)
         for i in 1:agent.n_epochs
             s, a, alp, ad, tv = rand(trajectory, agent.batch_size)
@@ -111,7 +115,6 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
                 L_clip(agent, s, a, ad, alp)    
             end
             Flux.update!(agent.actor_optimiser, psa, gsa)
-
             psc = Flux.params(agent.critic)
             gsc = gradient(psc) do
                 L_value(agent, s, tv)    
