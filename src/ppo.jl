@@ -54,7 +54,7 @@ function L_clip(agent, state, action, advantage, log_prob_old)
     loss_entropy = -mean(normentropy.(σ))*agent.entropy_weight
     Flux.Zygote.ignore() do
         push!(agent.loss_actor, loss_actor)
-        push!(agent.loss_entropy, loss_entropy)
+        push!(agent.loss_entropy, loss_entropy/agent.entropy_weight)
     end
     return loss_actor + loss_entropy
 end
