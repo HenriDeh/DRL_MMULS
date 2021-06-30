@@ -62,7 +62,7 @@ end
 function L_value(agent, state, target_value)
     loss_critic = Flux.mse(target_value, agent.critic(state))
     Flux.Zygote.ignore() do
-        push!(agent.loss_critic, loss_critic)
+        push!(agent.loss_critic, sqrt(loss_critic))
     end
     return loss_critic
 end
@@ -123,6 +123,6 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         end
         hook(agent, env)
         empty!(trajectory)
-        next!(prog, showvalues = [("Iteration ", it), show_value(hook)..., ("Actor loss ", last(agent.loss_actor)), ("Entropy loss ", last(agent.loss_entropy)), ("Critic loss", last(agent.loss_critic))])
+        next!(prog, showvalues = [("Iteration ", it), show_value(hook)..., ("Actor loss ", last(agent.loss_actor)), ("Entropy loss ", last(agent.loss_entropy)), ("√Critic loss", last(agent.loss_critic))])
     end
 end
