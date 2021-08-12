@@ -18,7 +18,7 @@ function load_environment(ins::DataFrameRow; train = false, forecasts = fill(Uni
     if train
         init_inv = Uniform.(-μ, 2μ)
     else
-        init_inv = fill(20,I)
+        init_inv = [fill(100.0,EP); zeros(I-EP)]
     end
 
     bom = Dict{Int,Any}()
@@ -68,7 +68,7 @@ function load_environment(ins::DataFrameRow; train = false, forecasts = fill(Uni
     constraints = Dict{Int, Any}()
     for (k, C) in enumerate(Cs)
         components = [only(bom[idx].sources) => r for (idx, r) in enumerate(α[:,k]) if r !=0]
-        co = RessourceConstraint(C, components...)
+        co = RessourceConstraint(C, components, name = "constraint $k")
         constraints[k] = co
     end
 

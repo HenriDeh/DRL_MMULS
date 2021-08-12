@@ -16,4 +16,5 @@ include("ppo.jl")
 include("agent.jl")
 include("hooks.jl")
 include("testbed/load_environment.jl")
+include("dashboard/dashboard.jl")
 end

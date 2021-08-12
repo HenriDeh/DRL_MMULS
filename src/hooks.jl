@@ -33,9 +33,13 @@ mutable struct TestEnvironment{E}
     count::Int
     stochastic::Bool
     batchsize::Int
+    logger
 end
 
-TestEnvironment(env, n_sim, every = 1; stochastic = false, batchsize = 1000) = TestEnvironment(env, n_sim, [-Inf], every, 0, stochastic, batchsize)
+function TestEnvironment(env, n_sim, every = 1; stochastic = false, batchsize = 1000) 
+    logger = ISLogger(env)
+    TestEnvironment(env, n_sim, [-Inf], every, 0, stochastic, batchsize, logger)
+end
 
 function (te::TestEnvironment)(agent::PPOPolicy, envi)
     te.count += 1
@@ -54,6 +58,9 @@ function (te::TestEnvironment)(agent::PPOPolicy, envi)
                 env(collect(action))
             end
             totreward += sum(reward.(envs))
+        end
+        for env in envs
+            te.logger(env, log_id = te.count)
         end
     end
     push!(te.log, totreward/te.n_sim)
