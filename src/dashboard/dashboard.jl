@@ -14,7 +14,6 @@ exp_smth(arr) = accumulate((o,n)-> o*0.8+n*0.2, arr)
 
 function make_tester_pane!(fig, gl, tester, agent)
     menu = gl[1,1] = Menu(fig, options = ["Return", "Actor loss", "√Critic loss", "Entropy"])
-    menu.i_selected = 1
     maxx =  begin 
         m = maximum(tester.logger[first(keys(tester.logger.logs))].log_id)
         if m == 0 
@@ -49,6 +48,9 @@ function make_tester_pane!(fig, gl, tester, agent)
     
     @lift begin 
         empty!(ax)
+        if menu.selection[] == "Return"
+            hlines!(ax, [-1.242141515164194e6], color = :blue)
+        end
         lines!(ax, 0..(maxx[]/1000), $y, color = :red)
     end
     return nothing
