@@ -1,6 +1,7 @@
 using InventoryModels, DataFrames, CSV, Distributions
 
-df = CSV.read("data/instances.csv", DataFrame)
+#df = CSV.read("data/instances.csv", DataFrame)
+
 
 function load_environment(ins::DataFrameRow; train = false, forecasts = fill(Uniform(1,19), ins.EndProducts), policy = sSPolicy())
     EP = ins.EndProducts
@@ -18,7 +19,7 @@ function load_environment(ins::DataFrameRow; train = false, forecasts = fill(Uni
     if train
         init_inv = Uniform.(-μ, 2μ)
     else
-        init_inv = [fill(100.0,EP); zeros(I-EP)]
+        init_inv = [fill(100.0,EP); zeros(I-EP)] #utiliser L*μ (+ SS) à la place ?
     end
 
     bom = Dict{Int,Any}()
@@ -73,5 +74,6 @@ function load_environment(ins::DataFrameRow; train = false, forecasts = fill(Uni
     end
 
     #Instanciate
-    InventorySystem(20, [el for el in values(bom)], [el for el in values(constraints)])
+    T = train ? 104 : 20
+    return InventorySystem(T, [el for el in values(bom)], [el for el in values(constraints)]), bom
 end
