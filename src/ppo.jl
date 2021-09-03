@@ -1,6 +1,6 @@
 #import ReinforcementLearningZoo: PPOTrajectory, CircularArraySARTTrajectory, Trajectory, CircularArrayTrajectory
 using Statistics, Flux, ProgressMeter
-import Flux: mse
+import Flux: mse, cpu, gpu
 
 const log2π =  Float32(log(2π))
 const nentropyconst = Float32((log2π + 1)/2)
@@ -26,10 +26,13 @@ mutable struct PPOPolicy{A, AO, C, CO,T,D}
 end
 
 function compute_advantages!(A, δ, λ, γ)
-    T = size(δ)[2]
     ls = typeof(δ)(getindex.(CartesianIndices(δ), 2))
-    A .= δ
-    reverse!((λ*γ) .^(ls) .* cumsum((λ*γ) .^(.- ls) .* reverse!(δ, dims = 2), dims = 2), dims= 2)
+    α = γ*λ
+    reverse!(δ,dims = 2)
+    @. δ *= α^(-ls)
+    cumsum!(A, δ, dims= 2)
+    @. A *= α^ls
+    reverse!(A,dims = 2)
 end
 
 function TD1_target(trajectory, agent)
@@ -41,7 +44,7 @@ function TDλ_target(trajectory, agent)
 end
 
 function normlogpdf(μ, σ, x; ϵ = eps(Float32))
-    -(((x .- μ) ./ (σ .+ ϵ)) .^ 2 .+ log2π) / 2.0f0 .- log.(σ .+ ϵ)
+   @. -(((x - μ)/(σ + ϵ))^2 + log2π) / 2.0f0 - log(σ + ϵ)
 end
 
 normentropy(σ, ϵ = eps(Float32)) = nentropyconst + log(σ + ϵ)
@@ -86,7 +89,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     trajectory = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
     prog = Progress(stop_iterations)
     for it in 1:stop_iterations
-        reset!.(envs)
+        map(reset!, envs)
         for t in 1:agent.n_steps
             states .= reduce(hcat, state.(envs)) |> device
             μ, σ = agent.actor(states)
@@ -99,9 +102,9 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             for (env, action) in zip(envs, eachcol(cpu(actions)))
                 env(collect(action))
             end
-            rewards .= reshape(reward.(envs), 1, :) |> device
+            rewards .= (reshape(map(reward, envs), 1, :) |> device) ./ 10000
             push!(trajectory, rewards, :reward)
-            next_states .= reduce(hcat, state.(envs)) |> device
+            next_states .= reduce(hcat, map(state, envs)) |> device
             push!(trajectory, next_states, :next_state)
             δ[:,t] = reshape((agent.γ .* agent.critic(next_states) .+ rewards .- agent.critic(states)), :, 1)
         end
@@ -123,6 +126,53 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         end
         hook(agent, env)
         empty!(trajectory)
-        next!(prog, showvalues = [("Iteration ", it), show_value(hook)..., ("Actor loss ", last(agent.loss_actor)), ("Entropy loss ", last(agent.loss_entropy)), ("√Critic loss", last(agent.loss_critic))])
+        next!(prog, showvalues = [  ("Iteration ", it), show_value(hook)..., 
+                                    ("Actor loss ", last(agent.loss_actor)), 
+                                    ("Entropy loss ", last(agent.loss_entropy)), 
+                                    ("√Critic loss", last(agent.loss_critic))])
     end
+end
+
+function cpu(p::PPOPolicy)
+    PPOPolicy(
+        p.actor |> cpu,
+        p.actor_optimiser,
+        p.critic |> cpu,
+        p.critic_optimiser,
+        p.γ,
+        p.λ,
+        p.clip_range,
+        p.entropy_weight,
+        p.n_actors,
+        p.n_steps,
+        p.n_epochs,
+        p.batch_size,
+        p.target_function,
+        p.loss_actor,
+        p.loss_critic,
+        p.loss_entropy,
+        cpu
+    )
+end
+
+function gpu(p::PPOPolicy)
+    PPOPolicy(
+        p.actor |> gpu,
+        p.actor_optimiser,
+        p.critic |> gpu,
+        p.critic_optimiser,
+        p.γ,
+        p.λ,
+        p.clip_range,
+        p.entropy_weight,
+        p.n_actors,
+        p.n_steps,
+        p.n_epochs,
+        p.batch_size,
+        p.target_function,
+        p.loss_actor,
+        p.loss_critic,
+        p.loss_entropy,
+        gpu
+    )
 end
