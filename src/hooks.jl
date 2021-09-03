@@ -43,12 +43,16 @@ end
 
 function (te::TestEnvironment)(agent::PPOPolicy, envi)
     te.count += 1
+    te.count % te.every == 0 || return 0.
+    return test_agent(agent, te)
+end
+
+function test_agent(agent, te)
     totreward = 0.
-    te.count % te.every == 0 || return totreward
     reset!(te.env)
     envs_part = Iterators.partition([deepcopy(te.env) for _ in 1:te.n_sim], te.batchsize)
     for envs in envs_part
-        while all(map(!, is_terminated.(envs)))
+        while all(map(env -> !is_terminated(env),envs))
             s = reduce(hcat, state.(envs)) |> agent.device
             a, σ = agent.actor(s)
             if te.stochastic
