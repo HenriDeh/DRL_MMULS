@@ -8,20 +8,8 @@ Flux.@functor Split
   
 (m::Split)(x::AbstractArray) = map(f -> f(x), m.paths)
 
-function PPOPolicy(
-    env; 
-    actor_optimiser, 
-    critic_optimiser, 
-    γ, 
-    λ, 
-    clip_range, 
-    entropy_weight, 
-    n_actors::Int, 
-    n_epochs::Int, 
-    batch_size::Int, 
-    target_function = TD1_target,
-    n_hidden::Int,
-    device = cpu)
+function PPOPolicy(env; actor_optimiser, critic_optimiser, γ, λ, clip_range, entropy_weight, n_steps = env.T,
+    n_actors::Int, n_epochs::Int, batch_size::Int, target_function = TD1_target, n_hidden::Int, device = cpu)
     actor = Chain(
         Dense(state_size(env), n_hidden, relu),
         Dense(n_hidden, n_hidden, relu),
@@ -49,7 +37,7 @@ function PPOPolicy(
         clip_range,
         entropy_weight,
         n_actors,
-        env.T,
+        n_steps,
         n_epochs,
         batch_size,
         target_function,
