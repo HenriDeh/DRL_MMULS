@@ -74,6 +74,6 @@ function load_environment(ins::DataFrameRow; train = false, forecasts = fill(Uni
     end
 
     #Instanciate
-    T = train ? 104 : 20
+    T = train ? 52 : 20
     return InventorySystem(T, [el for el in values(bom)], [el for el in values(constraints)]), bom
 end

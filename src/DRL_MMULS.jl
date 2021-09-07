@@ -12,8 +12,8 @@ function __init__()
 end
 
 include("trajectory.jl")
-include("ppo.jl")
 include("agent.jl")
+include("ppo.jl")
 include("hooks.jl")
 include("testbed/load_environment.jl")
 include("dashboard/dashboard.jl")

@@ -5,26 +5,6 @@ import Flux: mse, cpu, gpu
 const log2π =  Float32(log(2π))
 const nentropyconst = Float32((log2π + 1)/2)
 
-mutable struct PPOPolicy{A, AO, C, CO,T,D}
-    actor::A
-    actor_optimiser::AO
-    critic::C
-    critic_optimiser::CO
-    γ::Float32
-    λ::Float32
-    clip_range::Float32
-    entropy_weight::Float32
-    n_actors::Int
-    n_steps::Int
-    n_epochs::Int
-    batch_size::Int
-    target_function::T
-    loss_actor::Vector{Float32}
-    loss_critic::Vector{Float32}
-    loss_entropy::Vector{Float32}
-    device::D
-end
-
 function compute_advantages!(A, δ, λ, γ)
     ls = typeof(δ)(getindex.(CartesianIndices(δ), 2))
     α = γ*λ
@@ -36,7 +16,7 @@ function compute_advantages!(A, δ, λ, γ)
 end
 
 function TD1_target(trajectory, agent)
-    trajectory.traces[:reward] .+ agent.critic(trajectory.traces[:next_state]) .- agent.critic(trajectory.traces[:state])
+    trajectory.traces[:reward] .+ agent.critic(trajectory.traces[:next_state]) # .- agent.critic(trajectory.traces[:state])
 end
 
 function TDλ_target(trajectory, agent)
@@ -53,7 +33,8 @@ function L_clip(agent, state, action, advantage, log_prob_old)
     μ, σ = agent.actor(state)
     log_prob_new = normlogpdf(μ, σ, action)
     ratio = exp.(log_prob_new .- log_prob_old)
-    loss_actor = -mean(min.(ratio .* advantage, clamp.(ratio, 1f0-agent.clip_range, 1f0+agent.clip_range) .* advantage))
+    advantage_norm = advantage ./ std(advantage)
+    loss_actor = -mean(min.(ratio .* advantage_norm, clamp.(ratio, 1f0-agent.clip_range, 1f0+agent.clip_range) .* advantage_norm))
     loss_entropy = -mean(normentropy.(σ))*agent.entropy_weight
     Flux.Zygote.ignore() do
         push!(agent.loss_actor, loss_actor)
@@ -99,10 +80,10 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             push!(trajectory, states, :state)
             push!(trajectory, actions, :action)
             push!(trajectory, action_log_probs, :action_log_prob)
-            for (env, action) in zip(envs, eachcol(cpu(actions)))
+            Threads.@threads for (env, action) in collect(zip(envs, eachcol(cpu(actions))))
                 env(collect(action))
             end
-            rewards .= (reshape(map(reward, envs), 1, :) |> device) ./ 10000
+            rewards .= (reshape(map(reward, envs), 1, :) |> device)
             push!(trajectory, rewards, :reward)
             next_states .= reduce(hcat, map(state, envs)) |> device
             push!(trajectory, next_states, :next_state)
@@ -131,48 +112,4 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
                                     ("Entropy loss ", last(agent.loss_entropy)), 
                                     ("√Critic loss", last(agent.loss_critic))])
     end
-end
-
-function cpu(p::PPOPolicy)
-    PPOPolicy(
-        p.actor |> cpu,
-        p.actor_optimiser,
-        p.critic |> cpu,
-        p.critic_optimiser,
-        p.γ,
-        p.λ,
-        p.clip_range,
-        p.entropy_weight,
-        p.n_actors,
-        p.n_steps,
-        p.n_epochs,
-        p.batch_size,
-        p.target_function,
-        p.loss_actor,
-        p.loss_critic,
-        p.loss_entropy,
-        cpu
-    )
-end
-
-function gpu(p::PPOPolicy)
-    PPOPolicy(
-        p.actor |> gpu,
-        p.actor_optimiser,
-        p.critic |> gpu,
-        p.critic_optimiser,
-        p.γ,
-        p.λ,
-        p.clip_range,
-        p.entropy_weight,
-        p.n_actors,
-        p.n_steps,
-        p.n_epochs,
-        p.batch_size,
-        p.target_function,
-        p.loss_actor,
-        p.loss_critic,
-        p.loss_entropy,
-        gpu
-    )
 end
