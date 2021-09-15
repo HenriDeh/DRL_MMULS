@@ -17,7 +17,7 @@ function load_environment(ins::DataFrameRow; train = false, forecasts = fill(Uni
     i = I
 
     if train
-        init_inv = Uniform.(-μ, 2μ)
+        init_inv = LT .*μ
     else
         init_inv = [fill(100.0,EP); zeros(I-EP)] #utiliser L*μ (+ SS) à la place ?
     end
