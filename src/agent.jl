@@ -31,9 +31,9 @@ Flux.@functor Split
 function PPOPolicy(env; actor_optimiser, critic_optimiser, γ, λ, clip_range, entropy_weight, n_steps = env.T,
     n_actors::Int, n_epochs::Int, batch_size::Int, target_function = TD1_target, n_hidden::Int, device = cpu)
     actor = Chain(
-        Dense(state_size(env), n_hidden, tanh),
-        Dense(n_hidden, n_hidden, tanh),
-        Dense(n_hidden, n_hidden, tanh),
+        Dense(state_size(env), n_hidden, relu),
+        Dense(n_hidden, n_hidden, relu),
+        Dense(n_hidden, n_hidden, relu),
         Split(
             Dense(n_hidden, action_size(env)),
             Dense(n_hidden, action_size(env), softplus)
@@ -41,9 +41,9 @@ function PPOPolicy(env; actor_optimiser, critic_optimiser, γ, λ, clip_range, e
     ) |> device
 
     critic = Chain(
-        Dense(state_size(env), n_hidden, tanh),
-        Dense(n_hidden, n_hidden, tanh),
-        Dense(n_hidden, n_hidden, tanh),
+        Dense(state_size(env), n_hidden, relu),
+        Dense(n_hidden, n_hidden, relu),
+        Dense(n_hidden, n_hidden, relu),
         Dense(n_hidden, 1)
     ) |> device
 
