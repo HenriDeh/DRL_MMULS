@@ -19,7 +19,6 @@ function compute_advantages!(A, δ, λ, γ)
     @. δ *= α^(-ls)
     cumsum!(A, δ, dims= 2)
     @. A *= α^ls
-    #normalize!(A)
     reverse!(A,dims = 2)
 end
 
@@ -41,8 +40,7 @@ function L_clip(agent, state, action, advantage, log_prob_old)
     μ, σ = agent.actor(state)
     log_prob_new = normlogpdf(μ, σ, action)
     ratio = exp.(log_prob_new .- log_prob_old)
-    advantage_norm = advantage #./ std(advantage)
-    loss_actor = -mean(min.(ratio .* advantage_norm, clamp.(ratio, 1f0-agent.clip_range, 1f0+agent.clip_range) .* advantage_norm))
+    loss_actor = -mean(min.(ratio .* advantage, clamp.(ratio, 1f0-agent.clip_range, 1f0+agent.clip_range) .* advantage))
     loss_entropy = -mean(normentropy.(σ))*agent.entropy_weight
     Flux.Zygote.ignore() do
         push!(agent.loss_actor, loss_actor)
