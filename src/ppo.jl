@@ -1,9 +1,16 @@
 #import ReinforcementLearningZoo: PPOTrajectory, CircularArraySARTTrajectory, Trajectory, CircularArrayTrajectory
-using Statistics, Flux, ProgressMeter
+using Statistics, Flux, ProgressMeter, LinearAlgebra
 import Flux: mse, cpu, gpu
 
 const log2π =  Float32(log(2π))
 const nentropyconst = Float32((log2π + 1)/2)
+
+function normalize!(M)
+    m = mean(M)
+    s = std(M)
+    M .-= m
+    M ./= (s + eps(s)) 
+end
 
 function compute_advantages!(A, δ, λ, γ)
     ls = typeof(δ)(getindex.(CartesianIndices(δ), 2))
@@ -12,6 +19,7 @@ function compute_advantages!(A, δ, λ, γ)
     @. δ *= α^(-ls)
     cumsum!(A, δ, dims= 2)
     @. A *= α^ls
+    #normalize!(A)
     reverse!(A,dims = 2)
 end
 
@@ -33,7 +41,7 @@ function L_clip(agent, state, action, advantage, log_prob_old)
     μ, σ = agent.actor(state)
     log_prob_new = normlogpdf(μ, σ, action)
     ratio = exp.(log_prob_new .- log_prob_old)
-    advantage_norm = advantage ./ std(advantage)
+    advantage_norm = advantage #./ std(advantage)
     loss_actor = -mean(min.(ratio .* advantage_norm, clamp.(ratio, 1f0-agent.clip_range, 1f0+agent.clip_range) .* advantage_norm))
     loss_entropy = -mean(normentropy.(σ))*agent.entropy_weight
     Flux.Zygote.ignore() do
@@ -72,7 +80,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     for it in 1:stop_iterations
         map(reset!, envs)
         for t in 1:agent.n_steps
-            states .= reduce(hcat, state.(envs)) |> device
+            states .= reduce(hcat, map(state, envs)) |> device
             μ, σ = agent.actor(states)
             z .= randn(size(σ)) |> device
             actions .= μ .+ σ .* z 
@@ -91,7 +99,9 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         end
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
         push!(trajectory, reshape(advantages, 1, :), :advantage) 
-        push!(trajectory, agent.target_function(trajectory, agent), :target_value)
+        targets = agent.target_function(trajectory, agent, mu_v, std_v)
+        push!(trajectory, targets, :target_value)
+        #normalize!(trajectory.traces[:advantage])
         for i in 1:agent.n_epochs
             s, a, alp, ad, tv = rand(trajectory, agent.batch_size)
             psa = Flux.params(agent.actor)
