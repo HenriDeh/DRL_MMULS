@@ -17,7 +17,7 @@ function load_environment(ins::DataFrameRow; train = false, forecasts = fill(Uni
     i = I
 
     if train
-        init_inv = LT .*μ
+        init_inv = rand.(UnitRange.(0,LT)) .* μ # Uniform.(-μ, 2μ)
     else
         init_inv = [fill(100.0,EP); zeros(I-EP)] #utiliser L*μ (+ SS) à la place ?
     end
@@ -74,6 +74,6 @@ function load_environment(ins::DataFrameRow; train = false, forecasts = fill(Uni
     end
 
     #Instanciate
-    T = train ? 52 : 20
+    T = train ? 20 : 20
     return InventorySystem(T, [el for el in values(bom)], [el for el in values(constraints)]), bom
 end
