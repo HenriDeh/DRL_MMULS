@@ -47,7 +47,7 @@ function (te::TestEnvironment)(agent::PPOPolicy, envi)
     return test_agent(agent, te)
 end
 
-function test_agent(agent, te)
+function test_agent(agent, te::TestEnvironment)
     totreward = 0.
     reset!(te.env)
     envs_part = Iterators.partition([deepcopy(te.env) for _ in 1:te.n_sim], te.batchsize)
