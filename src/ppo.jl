@@ -24,7 +24,7 @@ function compute_advantages!(A, δ, λ, γ)
 end
 
 function TD1_target(trajectory, agent)
-    trajectory.traces[:reward] .+ agent.critic(trajectory.traces[:next_state]) # .- agent.critic(trajectory.traces[:state])
+    trajectory.traces[:reward] .+ agent.γ * agent.critic(trajectory.traces[:next_state]) 
 end
 
 function TDλ_target(trajectory, agent)
