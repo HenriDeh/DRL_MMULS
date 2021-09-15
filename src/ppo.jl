@@ -96,10 +96,11 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             δ[:,t] = reshape((agent.γ .* agent.critic(next_states) .+ rewards .- agent.critic(states)), :, 1)
         end
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
+        #advantages .= δ
         push!(trajectory, reshape(advantages, 1, :), :advantage) 
         targets = agent.target_function(trajectory, agent)
         push!(trajectory, targets, :target_value)
-        #normalize!(trajectory.traces[:advantage])
+        normalize!(trajectory.traces[:advantage])
         for i in 1:agent.n_epochs
             s, a, alp, ad, tv = rand(trajectory, agent.batch_size)
             psa = Flux.params(agent.actor)
