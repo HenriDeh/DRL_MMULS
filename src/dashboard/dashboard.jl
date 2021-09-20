@@ -49,7 +49,7 @@ function make_tester_pane!(fig, gl, tester, agent)
     @lift begin 
         empty!(ax)
         if menu.selection[] == "Return"
-            hlines!(ax, [-1.242141515164194e6], color = :blue)
+            #hlines!(ax, [-1.242141515164194e6], color = :blue)
         end
         lines!(ax, 0..(maxx[]/1000), $y, color = :red)
     end

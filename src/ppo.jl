@@ -58,6 +58,7 @@ function L_value(agent, state, target_value)
 end
 
 function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing)
+    clip_anneal_step = agent.clip_range/stop_iterations
     N = agent.n_actors
     T = agent.n_steps
     device = agent.device
@@ -100,7 +101,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         push!(trajectory, reshape(advantages, 1, :), :advantage) 
         targets = agent.target_function(trajectory, agent)
         push!(trajectory, targets, :target_value)
-        normalize!(trajectory.traces[:advantage])
+        #trajectory.traces[:advantage] ./= std(trajectory.traces[:advantage])
         for i in 1:agent.n_epochs
             s, a, alp, ad, tv = rand(trajectory, agent.batch_size)
             psa = Flux.params(agent.actor)
@@ -114,6 +115,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             end
             Flux.update!(agent.critic_optimiser, psc, gsc)
         end
+        agent.clip_range = max(0, agent.clip_range - clip_anneal_step)
         hook(agent, env)
         empty!(trajectory)
         next!(prog, showvalues = [  ("Iteration ", it), show_value(hook)..., 
