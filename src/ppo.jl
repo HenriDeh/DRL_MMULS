@@ -59,10 +59,11 @@ end
 
 function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing)
     clip_anneal_step = agent.clip_range/stop_iterations
+    critic_anneal_step = agent.critic_optimiser.eta/stop_iterations
+    actor_anneal_step = agent.actor_optimiser.eta/stop_iterations
     N = agent.n_actors
     T = agent.n_steps
     device = agent.device
-    envs = [deepcopy(env) for _ in 1:N]
     #Memory preallocations
     advantages = zeros(N, T) |> device # Agent x Periods -> flatten corresponds to trajectory
     δ = similar(advantages)
@@ -77,7 +78,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     trajectory = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
     prog = Progress(stop_iterations)
     for it in 1:stop_iterations
-        map(reset!, envs)
+        envs = [deepcopy(env) for _ in 1:N]
         for t in 1:agent.n_steps
             states .= reduce(hcat, map(state, envs)) |> device
             μ, σ = agent.actor(states)
@@ -116,9 +117,12 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             Flux.update!(agent.critic_optimiser, psc, gsc)
         end
         agent.clip_range = max(0, agent.clip_range - clip_anneal_step)
+        agent.actor_optimiser.eta = max(0, agent.actor_optimiser.eta - actor_anneal_step)
+        agent.critic_optimiser.eta = max(0, agent.critic_optimiser.eta - critic_anneal_step)
         hook(agent, env)
         empty!(trajectory)
-        next!(prog, showvalues = [  ("Iteration ", it), show_value(hook)..., 
+        next!(prog, showvalues = [  ("Iteration ", it), 
+                                    show_value(hook.hooks[1]), 
                                     ("Actor loss ", last(agent.loss_actor)), 
                                     ("Entropy loss ", last(agent.loss_entropy)), 
                                     ("√Critic loss", last(agent.loss_critic))])
