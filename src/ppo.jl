@@ -64,6 +64,10 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     N = agent.n_actors
     T = agent.n_steps
     device = agent.device
+    env_step_count = 0
+    rewards_running_mean = 0f0
+    rewards_running_M2 = 1f0
+    rewards_running_std = 1f0
     #Memory preallocations
     advantages = zeros(N, T) |> device # Agent x Periods -> flatten corresponds to trajectory
     δ = similar(advantages)
@@ -91,30 +95,40 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             Threads.@threads for (env, action) in collect(zip(envs, eachcol(cpu(actions))))
                 env(collect(action))
             end
+            env_step_count += N
             rewards .= (reshape(map(reward, envs), 1, :) |> device)
+            tmp_mean = rewards_running_mean
+            rewards_running_mean = (env_step_count-N)/env_step_count*rewards_running_mean + sum(rewards)/env_step_count
+            rewards_running_M2 += sum((rewards .- tmp_mean).*(rewards .- rewards_running_mean))
+            rewards_running_std = sqrt(rewards_running_M2/(env_step_count-1))
+            rewards ./= rewards_running_std
             push!(trajectory, rewards, :reward)
             next_states .= reduce(hcat, map(state, envs)) |> device
             push!(trajectory, next_states, :next_state)
             δ[:,t] = reshape((agent.γ .* agent.critic(next_states) .+ rewards .- agent.critic(states)), :, 1)
         end
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
-        #advantages .= δ
         push!(trajectory, reshape(advantages, 1, :), :advantage) 
         targets = agent.target_function(trajectory, agent)
         push!(trajectory, targets, :target_value)
-        #trajectory.traces[:advantage] ./= std(trajectory.traces[:advantage])
+        dataloader = Flux.Data.DataLoader(trajectory, batchsize = agent.batch_size, shuffle = true, partial = false)
+        for i in 1:1
+            for (s, a, r, ns, alp, ad, tv) in dataloader
+                psa = Flux.params(agent.actor)
+                gsa = gradient(psa) do
+                    L_clip(agent, s, a, ad, alp)    
+                end
+                Flux.update!(agent.actor_optimiser, psa, gsa)
+            end
+        end
         for i in 1:agent.n_epochs
-            s, a, alp, ad, tv = rand(trajectory, agent.batch_size)
-            psa = Flux.params(agent.actor)
-            gsa = gradient(psa) do
-                L_clip(agent, s, a, ad, alp)    
+            for (s, a, r, ns, alp, ad, tv) in dataloader
+                psc = Flux.params(agent.critic)
+                gsc = gradient(psc) do
+                    L_value(agent, s, tv)    
+                end
+                Flux.update!(agent.critic_optimiser, psc, gsc)
             end
-            Flux.update!(agent.actor_optimiser, psa, gsa)
-            psc = Flux.params(agent.critic)
-            gsc = gradient(psc) do
-                L_value(agent, s, tv)    
-            end
-            Flux.update!(agent.critic_optimiser, psc, gsc)
         end
         agent.clip_range = max(0, agent.clip_range - clip_anneal_step)
         agent.actor_optimiser.eta = max(0, agent.actor_optimiser.eta - actor_anneal_step)
