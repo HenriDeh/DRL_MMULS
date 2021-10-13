@@ -43,3 +43,7 @@ function Base.push!(t::PPOTrajectory{A}, data::B, trace::Symbol) where {A <: Abs
     t.traces[trace][:,t.idx[trace]:t.idx[trace] + T - 1] .= A(data)
     t.idx[trace] += T
 end
+
+function Flux.Data.DataLoader(tr::PPOTrajectory; kwargs...)
+    Flux.Data.DataLoader(tr.traces; kwargs...)
+end
