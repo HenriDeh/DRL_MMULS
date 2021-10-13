@@ -69,49 +69,51 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     rewards_running_M2 = 1f0
     rewards_running_std = 1f0
     #Memory preallocations
-    advantages = zeros(N, T) |> device # Agent x Periods -> flatten corresponds to trajectory
+    advantages = zeros(N, T) # Agent x Periods -> flatten corresponds to trajectory
     δ = similar(advantages)
-    states = zeros(state_size(env), N) |> device
-    actions = zeros(action_size(env), N) |> device
-    rewards = zeros(1, N) |> device
+    states = zeros(state_size(env), N)
+    actions = zeros(action_size(env), N)
+    rewards = zeros(1, N)
     next_states = similar(states)
     μ = similar(actions)
     σ = similar(actions)
     z = similar(actions)
     action_log_probs = similar(actions)
-    trajectory = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
+    trajectory = PPOTrajectory(N*T, state_size(env), action_size(env), device = cpu)
+    trajectory_d = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
     prog = Progress(stop_iterations)
     for it in 1:stop_iterations
         envs = [deepcopy(env) for _ in 1:N]
         for t in 1:agent.n_steps
-            states .= reduce(hcat, map(state, envs)) |> device
-            μ, σ = agent.actor(states)
-            z .= randn(size(σ)) |> device
+            states .= reduce(hcat, map(state, envs))
+            μ, σ = agent.actor(states |> device) |> cpu
+            z .= randn(size(σ))
             actions .= μ .+ σ .* z 
             action_log_probs .= normlogpdf(μ, σ, actions)
             push!(trajectory, states, :state)
             push!(trajectory, actions, :action)
             push!(trajectory, action_log_probs, :action_log_prob)
-            Threads.@threads for (env, action) in collect(zip(envs, eachcol(cpu(actions))))
+            Threads.@threads for (env, action) in collect(zip(envs, eachcol(actions)))
                 env(collect(action))
             end
             env_step_count += N
-            rewards .= (reshape(map(reward, envs), 1, :) |> device)
+            rewards .= (reshape(map(reward, envs), 1, :))
             tmp_mean = rewards_running_mean
             rewards_running_mean = (env_step_count-N)/env_step_count*rewards_running_mean + sum(rewards)/env_step_count
             rewards_running_M2 += sum((rewards .- tmp_mean).*(rewards .- rewards_running_mean))
             rewards_running_std = sqrt(rewards_running_M2/(env_step_count-1))
             rewards ./= rewards_running_std
             push!(trajectory, rewards, :reward)
-            next_states .= reduce(hcat, map(state, envs)) |> device
+            next_states .= reduce(hcat, map(state, envs))
             push!(trajectory, next_states, :next_state)
-            δ[:,t] = reshape((agent.γ .* agent.critic(next_states) .+ rewards .- agent.critic(states)), :, 1)
+            δ[:,t] = reshape((agent.γ .* cpu(agent.critic(next_states |> device)) .+ rewards .- cpu(agent.critic(states |> device))), :, 1)
         end
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
         push!(trajectory, reshape(advantages, 1, :), :advantage) 
-        targets = agent.target_function(trajectory, agent)
-        push!(trajectory, targets, :target_value)
-        dataloader = Flux.Data.DataLoader(trajectory, batchsize = agent.batch_size, shuffle = true, partial = false)
+        trajectory_d.traces = device(trajectory.traces)
+        targets = agent.target_function(trajectory_d, agent)
+        trajectory_d.traces.target_value .= targets
+        dataloader = Flux.Data.DataLoader(trajectory_d, batchsize = agent.batch_size, shuffle = true, partial = false)
         for i in 1:1
             for (s, a, r, ns, alp, ad, tv) in dataloader
                 psa = Flux.params(agent.actor)
