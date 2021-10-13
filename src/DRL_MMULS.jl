@@ -17,4 +17,17 @@ include("ppo.jl")
 include("hooks.jl")
 include("testbed/load_environment.jl")
 include("dashboard/dashboard.jl")
+
+mutable struct Kscheduler
+    n::Int
+    Ktarget::Float64
+    range::UnitRange{Int}
+end
+
+function (ks::Kscheduler)(agent, env) 
+    ks.n += 1
+    if ks.n in ks.range
+        env.bom[1].sources[1].order_cost.K += ks.Ktarget/length(ks.range)
+    end
+end
 end
