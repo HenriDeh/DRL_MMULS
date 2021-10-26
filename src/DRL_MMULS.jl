@@ -5,8 +5,8 @@ using InventoryModels
 using Requires
 
 export PPOPolicy, TD1_target, TDλ_target
-export Hook, EntropyAnnealing, TestEnvironment
-
+export Hook, EntropyAnnealing, TestEnvironment, Kscheduler
+export test_ss_policy
 function __init__()
     @require Gurobi="2e9cd046-0924-5485-92f1-d5272153d98b" include("testbed/deterministic_MIP.jl")
 end
@@ -17,6 +17,7 @@ include("ppo.jl")
 include("hooks.jl")
 include("testbed/load_environment.jl")
 include("dashboard/dashboard.jl")
+include("testbed/sspolicy_test.jl")
 
 mutable struct Kscheduler
     n::Int
