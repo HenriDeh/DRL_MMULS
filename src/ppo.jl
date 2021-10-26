@@ -58,7 +58,7 @@ function L_value(agent, state, target_value)
 end
 
 function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing)
-    clip_anneal_step = agent.clip_range/stop_iterations
+    #clip_anneal_step = agent.clip_range/stop_iterations
     critic_anneal_step = agent.critic_optimiser.eta/stop_iterations
     actor_anneal_step = agent.actor_optimiser.eta/stop_iterations
     N = agent.n_actors
@@ -101,7 +101,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             tmp_mean = rewards_running_mean
             rewards_running_mean = (env_step_count-N)/env_step_count*rewards_running_mean + sum(rewards)/env_step_count
             rewards_running_M2 += sum((rewards .- tmp_mean).*(rewards .- rewards_running_mean))
-            rewards_running_std = sqrt(rewards_running_M2/(env_step_count-1))
+            rewards_running_std = max(sqrt(rewards_running_M2/(env_step_count-1)), 1f-6)
             rewards ./= rewards_running_std
             push!(trajectory, rewards, :reward)
             next_states .= reduce(hcat, map(state, envs))
@@ -132,7 +132,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
                 Flux.update!(agent.critic_optimiser, psc, gsc)
             end
         end
-        agent.clip_range = max(0, agent.clip_range - clip_anneal_step)
+        #agent.clip_range = max(0, agent.clip_range - clip_anneal_step)
         agent.actor_optimiser.eta = max(0, agent.actor_optimiser.eta - actor_anneal_step)
         agent.critic_optimiser.eta = max(0, agent.critic_optimiser.eta - critic_anneal_step)
         hook(agent, env)
