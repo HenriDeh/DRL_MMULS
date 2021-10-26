@@ -28,7 +28,7 @@ end
 mutable struct TestEnvironment{E}
     env::E
     n_sim::Int
-    log::Vector{Float64}
+    log::Vector{Tuple{Float64,Float64}}
     every::Int
     count::Int
     stochastic::Bool
@@ -38,38 +38,37 @@ end
 
 function TestEnvironment(env, n_sim, every = 1; stochastic = false, batchsize = 1000) 
     logger = ISLogger(env)
-    TestEnvironment(env, n_sim, [-Inf], every, 0, stochastic, batchsize, logger)
+    TestEnvironment(env, n_sim, [(-Inf, -Inf)], every, 0, stochastic, batchsize, logger)
 end
 
 function (te::TestEnvironment)(agent::PPOPolicy, envi)
     te.count += 1
     te.count % te.every == 0 || return 0.
-    return test_agent(agent, te)
+    return test_agent(agent, te)[1]
 end
 
 function test_agent(agent, te::TestEnvironment)
     totreward = 0.
     reset!(te.env)
-    envs_part = Iterators.partition([deepcopy(te.env) for _ in 1:te.n_sim], te.batchsize)
-    for envs in envs_part
-        while all(map(env -> !is_terminated(env),envs))
-            s = reduce(hcat, state.(envs)) |> agent.device
-            a, σ = agent.actor(s)
-            if te.stochastic
-                a .+= σ .* (randn(size(σ)) |> agent.device)
-            end
-            for (env, action) in zip(envs, eachcol(cpu(a)))
-                env(collect(action))
-            end
-            totreward += sum(reward.(envs))
+    envs = [deepcopy(te.env) for _ in 1:te.n_sim]
+    returns = zeros(te.n_sim)
+    while all(map(env -> !is_terminated(env),envs))
+        s = reduce(hcat, state.(envs)) |> agent.device
+        a, σ = agent.actor(s)
+        if te.stochastic
+            a .+= σ .* (randn(size(σ)) |> agent.device)
         end
-        for env in envs
-            te.logger(env, log_id = te.count)
+        for (env, action) in zip(envs, eachcol(cpu(a)))
+            env(collect(action))
         end
+        returns .+= map(reward, envs)
     end
-    push!(te.log, totreward/te.n_sim)
-    return totreward/te.n_sim
+    for env in envs
+        te.logger(env, log_id = te.count)
+    end
+    push!(te.log, (mean(returns), std(returns)))
+    return mean(returns)
 end
 
 Base.getindex(te::TestEnvironment, n) = te.log[n]
-show_value(te::TestEnvironment) = ("Test environment return ", last(te.log))
+show_value(te::TestEnvironment) = ("Test environment return", "$(round(last(te.log)[1])) ± $(round(1.95*last(te.log)[2]/sqrt(te.n_sim)))")
