@@ -1,4 +1,4 @@
-The branch of this package accompagnies the following publication : . 
+This branch of this package accompagnies the following publication : . 
 
 To install this package, run the following commands in the Julia REPL.
 ```
