@@ -72,3 +72,17 @@ end
 
 Base.getindex(te::TestEnvironment, n) = te.log[n]
 show_value(te::TestEnvironment) = ("Test environment return", "$(round(last(te.log)[1])) ± $(round(1.95*last(te.log)[2]/sqrt(te.n_sim)))")
+
+# Hook to linearly anneal the setup cost of a single item problem.
+mutable struct Kscheduler
+    n::Int
+    Ktarget::Float64
+    range::UnitRange{Int}
+end
+
+function (ks::Kscheduler)(agent, env) 
+    ks.n += 1
+    if ks.n in ks.range
+        env.bom[1].sources[1].order_cost.K += ks.Ktarget/length(ks.range)
+    end
+end
