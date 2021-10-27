@@ -10,8 +10,6 @@ c = 0
 LT = 8
 lostsales = false
 
-
-
 test_env = sl_sip(h, b, K, CV, c, fill(10.0, 52), 0.0, LT, lostsales = lostsales, horizon = 32)
 
 ins = Scarf.Instance(test_env)

@@ -4,26 +4,16 @@ struct Hook{H<:Tuple}
     hooks::H
 end
 
+"""
+    Hook(hooks...)
+
+Use this struct to wrap multiple hooks.
+"""
 Hook(hooks...) = Hook{typeof(hooks)}(hooks)
 
 (h::Hook)(agent, env) = for hook in h.hooks hook(agent,env) end
 
 show_value(h::Hook{<:Tuple}) = [show_value(hook) for hook in h.hooks] 
-
-struct EntropyAnnealing
-    step::Float32
-    target::Float32
-end
-
-EntropyAnnealing(lr::LinRange) = EntropyAnnealing(lr[1] - lr[2], last(lr))
-
-show_value(ea::EntropyAnnealing) = ("Entropy annealing to ", ea.target)
-
-function (ea::EntropyAnnealing)(agent::PPOPolicy, env) 
-    if agent.entropy_weight > ea.target
-        agent.entropy_weight -= ea.step
-    end
-end
 
 mutable struct TestEnvironment{E}
     env::E
@@ -35,7 +25,14 @@ mutable struct TestEnvironment{E}
     batchsize::Int
     logger
 end
+"""
+    TestEnvironment(env, n_sim, every = 1; stochastic = false)
 
+Hook object that will evaluate a training agent on the `env` environment for `n_sim` MC simulations every `every` iteration.
+Set `stochastic = true` to use the stochastic policy, otherwise the actions will be the modes of the agent's policy.
+Calling a test environment returns the mean and the std of the returns obtained for the `n_sim` runs. 
+These values are stored in the `log` field of the struct.
+"""
 function TestEnvironment(env, n_sim, every = 1; stochastic = false, batchsize = 1000) 
     logger = ISLogger(env)
     TestEnvironment(env, n_sim, [(-Inf, -Inf)], every, 0, stochastic, batchsize, logger)
@@ -73,12 +70,20 @@ end
 Base.getindex(te::TestEnvironment, n) = te.log[n]
 show_value(te::TestEnvironment) = ("Test environment return", "$(round(last(te.log)[1])) ± $(round(1.95*last(te.log)[2]/sqrt(te.n_sim)))")
 
-# Hook to linearly anneal the setup cost of a single item problem.
+"""
+    Kscheduler(Ktarget::Float64, range::UnitRange{Int})
+
+Hook object to linearly anneal the fixed order cost of a single item problem. Linearly anneal from a initial value to be increased by Ktarget over the course of the iterations in `range`. 
+#Example
+Kscheduler(1280, 1000:4000) will start increasing the fixed order cost of the learning environment at iteration 1000 by 1280/3000 every iteration. At iteration 4000, the fixed order cost will have increased by 1280.
+"""
 mutable struct Kscheduler
     n::Int
     Ktarget::Float64
     range::UnitRange{Int}
 end
+
+Kscheduler(Ktarget, range) = Kscheduler(0, Ktarget, range)
 
 function (ks::Kscheduler)(agent, env) 
     ks.n += 1

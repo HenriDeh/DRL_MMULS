@@ -12,6 +12,12 @@ function normalize!(M)
     M ./= (s + eps(s)) 
 end
 
+"""
+    compute_advantages!(A, δ, λ, γ)
+
+Compute the GAE in-place in the A matrix given an error matrix of δ where each row represents the errors of the trajectory of a single simulation.
+λ and γ are the discount parameters.
+"""
 function compute_advantages!(A, δ, λ, γ)
     ls = typeof(δ)(getindex.(CartesianIndices(δ), 2))
     α = γ*λ
@@ -57,6 +63,12 @@ function L_value(agent, state, target_value)
     return loss_critic
 end
 
+"""
+    Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing)
+
+Main PPO training function. Run the PPO algorithm for `stop_iterations` to train `agent` at solving `env`. Hyperparameters are encoded in the `agent` object. 
+Use hook to run a `hook(agent, env)` function every iteration. For example, see TestEnvironment to evaluate periodically agent. Use the `Hook` object to input multiple hooks.
+"""
 function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing)
     #clip_anneal_step = agent.clip_range/stop_iterations
     critic_anneal_step = agent.critic_optimiser.eta/stop_iterations

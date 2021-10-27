@@ -5,6 +5,8 @@ using Random
 include("../../src/testbed/sspolicy_test.jl")
 Random.seed!(2021)
 
+#device selection, change to `cpu` if you do not have an Nvidia compatible GPU.
+device = gpu
 #default parameters of train and test environments.
 holding = 1.
 leadtime_d = 2
@@ -107,7 +109,7 @@ function ppo_testbed()
                 
                 agent_d = PPOPolicy(env, actor_optimiser = ADAM(3f-4), critic_optimiser = ADAM(3f-4), n_hidden = 128,
                 γ = 0.99f0,λ = 0.95f0, clip_range = 0.2f0, entropy_weight = 1f-2, n_actors = 25, n_epochs = 10, batch_size = 128,
-                target_function = TDλ_target, device = gpu)
+                target_function = TDλ_target, device = device)
                 
                 tester = TestEnvironment(sl_sip(holding, shortage, setup, CV, 0, fill(10.0,52), 0.0, leadtime, lostsales = lostsale, horizon = 32, policy = policy), 100, 100)
                 time = @elapsed run(agent_d, env, stop_iterations = stop_iterations, hook = Hook(tester, Kscheduler(0,setup, 1000:(stop_iterations-1000))))
