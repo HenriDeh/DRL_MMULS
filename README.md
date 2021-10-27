@@ -1,21 +1,10 @@
-# DRL_MMULS
+The branch of this package accompagnies the following publication : . 
 
-This code base is using the Julia Language and [DrWatson](https://juliadynamics.github.io/DrWatson.jl/stable/)
-to make a reproducible scientific project named
-> DRL_MMULS
+To install this package, run the following commands in the Julia REPL.
+```
+using Pkg
+Pkg.add("url#single-item")
+using DRL_MMULS
+```
+The experiments described in the article were performed using Julia 1.6.2. Any newer version should yield almost identical results.
 
-It is authored by Henri Dehaybe.
-
-To (locally) reproduce this project, do the following:
-
-0. Download this code base. Notice that raw data are typically not included in the
-   git-history and may need to be downloaded independently.
-1. Open a Julia console and do:
-   ```
-   julia> using Pkg
-   julia> Pkg.activate("path/to/this/project")
-   julia> Pkg.instantiate()
-   ```
-
-This will install all necessary packages for you to be able to run the scripts and
-everything should work out of the box.
