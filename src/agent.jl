@@ -31,20 +31,20 @@ Flux.@functor Split
 function PPOPolicy(env; actor_optimiser, critic_optimiser, γ, λ, clip_range, entropy_weight, n_steps = env.T,
     n_actors::Int, n_epochs::Int, batch_size::Int, target_function = TD1_target, n_hidden::Int, device = cpu)
     actor = Chain(
-        Dense(state_size(env), n_hidden, relu),
-        Dense(n_hidden, n_hidden, relu),
-        Dense(n_hidden, n_hidden, relu),
+        Dense(state_size(env), n_hidden, tanh, init=Flux.orthogonal),
+        Dense(n_hidden, n_hidden, tanh, init=Flux.orthogonal),
+        Dense(n_hidden, n_hidden, tanh, init=Flux.orthogonal),
         Split(
-            Dense(n_hidden, action_size(env)),
-            Dense(n_hidden, action_size(env), softplus)
+            Dense(n_hidden, action_size(env), init=Flux.orthogonal),
+            Dense(n_hidden, action_size(env), softplus, init=Flux.orthogonal)
             )
     ) |> device
 
     critic = Chain(
-        Dense(state_size(env), n_hidden, relu),
-        Dense(n_hidden, n_hidden, relu),
-        Dense(n_hidden, n_hidden, relu),
-        Dense(n_hidden, 1)
+        Dense(state_size(env), n_hidden, tanh, init=Flux.orthogonal),
+        Dense(n_hidden, n_hidden, tanh, init=Flux.orthogonal),
+        Dense(n_hidden, n_hidden, tanh, init=Flux.orthogonal),
+        Dense(n_hidden, 1, init=Flux.orthogonal)
     ) |> device
 
     PPOPolicy(
