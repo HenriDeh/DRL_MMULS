@@ -76,10 +76,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     N = agent.n_actors
     T = agent.n_steps
     device = agent.device
-    env_step_count = 0
-    rewards_running_mean = 0f0
-    rewards_running_M2 = 1f0
-    rewards_running_std = 1f0
+    reward_normalizer = Normalizer()
     #Memory preallocations
     advantages = zeros(N, T) # Agent x Periods -> flatten corresponds to trajectory
     δ = similar(advantages)
@@ -110,11 +107,8 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             end
             env_step_count += N
             rewards .= (reshape(map(reward, envs), 1, :))
-            tmp_mean = rewards_running_mean
-            rewards_running_mean = (env_step_count-N)/env_step_count*rewards_running_mean + sum(rewards)/env_step_count
-            rewards_running_M2 += sum((rewards .- tmp_mean).*(rewards .- rewards_running_mean))
-            rewards_running_std = max(sqrt(rewards_running_M2/(env_step_count-1)), 1f-6)
-            rewards ./= rewards_running_std
+            update(reward_normalizer, rewards)
+            reward_normalizer(rewards)
             push!(trajectory, rewards, :reward)
             next_states .= reduce(hcat, map(state, envs))
             push!(trajectory, next_states, :next_state)
@@ -145,12 +139,13 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             end
         end
         #agent.clip_range = max(0, agent.clip_range - clip_anneal_step)
-        agent.actor_optimiser.eta = max(0, agent.actor_optimiser.eta - actor_anneal_step)
-        agent.critic_optimiser.eta = max(0, agent.critic_optimiser.eta - critic_anneal_step)
+        #agent.actor_optimiser.eta = max(0, agent.actor_optimiser.eta - actor_anneal_step)
+        #agent.critic_optimiser.eta = max(0, agent.critic_optimiser.eta - critic_anneal_step)
         hook(agent, env)
         empty!(trajectory)
         next!(prog, showvalues = [  ("Iteration ", it), 
-                                    show_value(hook.hooks[1]), 
+                                    show_value(hook)...,
+                                    ("LR ", ( agent.actor_optimiser.eta, agent.critic_optimiser.eta)), 
                                     ("Actor loss ", last(agent.loss_actor)), 
                                     ("Entropy loss ", last(agent.loss_entropy)), 
                                     ("√Critic loss", last(agent.loss_critic))])

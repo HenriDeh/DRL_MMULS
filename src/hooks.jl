@@ -1,4 +1,4 @@
-show_value(::Any) = [("No ", "hook")]
+show_value(h::Any) = ("$(typeof(h))", "hook")
 
 struct Hook{H<:Tuple}
     hooks::H
@@ -15,7 +15,7 @@ Hook(hooks...) = Hook{typeof(hooks)}(hooks)
 
 show_value(h::Hook{<:Tuple}) = [show_value(hook) for hook in h.hooks] 
 
-mutable struct TestEnvironment{E}
+mutable struct TestEnvironment{E,N}
     env::E
     n_sim::Int
     log::Vector{Tuple{Float64,Float64}}
@@ -91,3 +91,48 @@ function (ks::Kscheduler)(agent, env)
         env.bom[1].sources[1].order_cost.K += ks.Ktarget/length(ks.range)
     end
 end
+
+mutable struct Normalizer{T}
+    mean::T
+    m2::T
+    std::T
+    count::Int
+end
+
+function Normalizer(n::Int)
+    Normalizer(zeros(Float32, n), ones(Float32, n), ones(Float32, n), 0)
+end
+
+function Normalizer()
+    Normalizer(0f0, 1f0, 1f0, 0)
+end
+
+function update(n::Normalizer{<:Vector}, inputs::AbstractVecOrMat)
+    for input in eachcol(inputs)
+        n.count += 1
+        tmp_mean = n.mean
+        n.mean .= (n.count-1)/n.count .* n.mean .+ input ./ n.count
+        n.m2 .+= (input .- tmp_mean) .* (input .- n.mean)
+        n.std .= max.(sqrt.(n.m2 ./ (n.count-1)), 1f-6)
+    end
+end
+
+
+function update(n::Normalizer{<:Number}, inputs)
+    for input in inputs
+        n.count += 1
+        tmp_mean = n.mean
+        n.mean = (n.count-1)/n.count * n.mean + input / n.count
+        n.m2 += (input - tmp_mean) .* (input - n.mean)
+        n.std = max(sqrt(n.m2 / (n.count-1)), 1e-6)
+    end
+end
+
+function update(::Any, ::Any)
+end
+
+function (n::Normalizer)(input)
+    input .-= n.mean 
+    input ./= n.std
+end
+
