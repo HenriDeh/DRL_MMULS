@@ -38,7 +38,7 @@ for ϱ in ϱs
     δ = Uniform(-ϱ, ϱ)
     for i in 1:n
         global ID += 1
-        fc = [(0.5+t/T)*μ + rand(δ) for t in 1:T]
+        fc = [(0.8+0.4*t/T)*μ + rand(δ) for t in 1:T]
         CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Growth", varrho = ϱ, forecast = [fc]), append = true)
     end
 end
@@ -49,7 +49,7 @@ for ϱ in ϱs
     δ = Uniform(-ϱ, ϱ)
     for i in 1:n
         global ID += 1
-        fc = [(1.5-t/T)*μ + rand(δ) for t in 1:T]
+        fc = [(1.2-0.4*t/T)*μ + rand(δ) for t in 1:T]
         CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Decline", varrho = ϱ, forecast = [fc]), append = true)
     end
 end
