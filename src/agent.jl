@@ -29,6 +29,8 @@ Flux.@functor Split
   
 (m::Split)(x::AbstractArray) = map(f -> f(x), m.paths)
 
+orthosmall(dims...) = Flux.orthogonal(dims..., gain = 0.01)
+
 """
     PPOPolicy(env; <keyword arguments>)
 
@@ -54,19 +56,19 @@ PPOPolicy logs the loss of each training epoch in the `loss_actor`, `loss_critic
 function PPOPolicy(env; actor_optimiser, critic_optimiser, γ, λ, clip_range, entropy_weight, n_steps = env.T,
     n_actors::Int, n_epochs::Int, batch_size::Int, target_function = TD1_target, n_hidden::Int, device = cpu)
     actor = Chain(
-        Dense(state_size(env), n_hidden, tanh, init=Flux.orthogonal),
-        Dense(n_hidden, n_hidden, tanh, init=Flux.orthogonal),
-        Dense(n_hidden, n_hidden, tanh, init=Flux.orthogonal),
+        Dense(state_size(env), n_hidden, relu, init=Flux.orthogonal),
+        Dense(n_hidden, n_hidden, relu, init=Flux.orthogonal),
+        Dense(n_hidden, n_hidden, relu, init=Flux.orthogonal),
         Split(
-            Dense(n_hidden, action_size(env), init=Flux.orthogonal),
-            Dense(n_hidden, action_size(env), softplus, init=Flux.orthogonal)
+            Dense(n_hidden, action_size(env), init= orthosmall),
+            Dense(n_hidden, action_size(env), softplus, init=orthosmall)
             )
     ) |> device
 
     critic = Chain(
-        Dense(state_size(env), n_hidden, tanh, init=Flux.orthogonal),
-        Dense(n_hidden, n_hidden, tanh, init=Flux.orthogonal),
-        Dense(n_hidden, n_hidden, tanh, init=Flux.orthogonal),
+        Dense(state_size(env), n_hidden, relu, init=Flux.orthogonal),
+        Dense(n_hidden, n_hidden, relu, init=Flux.orthogonal),
+        Dense(n_hidden, n_hidden, relu, init=Flux.orthogonal),
         Dense(n_hidden, 1, init=Flux.orthogonal)
     ) |> device
 
