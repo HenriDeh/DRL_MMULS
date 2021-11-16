@@ -15,7 +15,7 @@ Hook(hooks...) = Hook{typeof(hooks)}(hooks)
 
 show_value(h::Hook{<:Tuple}) = [show_value(hook) for hook in h.hooks] 
 
-mutable struct TestEnvironment{E,N}
+mutable struct TestEnvironment{E}
     env::E
     n_sim::Int
     log::Vector{Tuple{Float64,Float64}}
@@ -91,6 +91,7 @@ function (ks::Kscheduler)(agent, env)
         env.bom[1].sources[1].order_cost.K += ks.Ktarget/length(ks.range)
     end
 end
+show_value(ks::Kscheduler) = ("Kscheduler", "Target $(ks.Ktarget) in $(ks.range)")
 
 mutable struct Normalizer{T}
     mean::T
@@ -98,6 +99,7 @@ mutable struct Normalizer{T}
     std::T
     count::Int
 end
+
 
 function Normalizer(n::Int)
     Normalizer(zeros(Float32, n), ones(Float32, n), ones(Float32, n), 0)
