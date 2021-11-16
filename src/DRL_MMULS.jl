@@ -2,15 +2,11 @@ module DRL_MMULS
 using CUDA
 using Flux
 using InventoryModels
-using Requires
+using Requires, Distributions
 
 export PPOPolicy, TD1_target, TDλ_target
-export Hook, TestEnvironment, Kscheduler
-export test_ss_policy
-function __init__()
-    @require Gurobi="2e9cd046-0924-5485-92f1-d5272153d98b" include("testbed/deterministic_MIP.jl")
-end
-
+export Hook, TestEnvironment, Kscheduler, Normalizer
+export test_ss_policy, test_agent
 include("trajectory.jl")
 include("agent.jl")
 include("ppo.jl")
