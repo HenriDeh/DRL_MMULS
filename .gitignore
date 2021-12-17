@@ -10,6 +10,7 @@ scripts/multi-item
 data/single-item/agents
 src/dashboard
 src/testbed/multi-item
+scripts/single-item/plotting
 videos
 plots
 papers
