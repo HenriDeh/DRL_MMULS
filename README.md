@@ -8,3 +8,4 @@ using DRL_MMULS
 ```
 The experiments described in the article were performed using Julia 1.6.2. Any newer version should yield almost identical results.
 
+To reproduce the results, run the julia file at `scripts/single-item/single-item.jl`
