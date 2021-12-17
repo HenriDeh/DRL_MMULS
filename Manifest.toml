@@ -634,7 +634,9 @@ version = "0.5.3"
 
 [[InventoryModels]]
 deps = ["DataFrames", "DataStructures", "Distributions", "GLMakie", "GraphMakie", "LightGraphs", "MacroTools", "NetworkLayout", "Reexport", "Requires", "Revise", "SpecialFunctions", "Test"]
-path = "../InventoryModels"
+git-tree-sha1 = "fa1d0af0bc3d0d562803349c9e1ac6b050f5c2c6"
+repo-rev = "master"
+repo-url = "https://github.com/HenriDeh/InventoryModels.jl"
 uuid = "be94c240-e620-4455-b2c0-7979cca4862a"
 version = "0.3.0"
 
