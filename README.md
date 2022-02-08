@@ -4,7 +4,7 @@ You are currently checking out the master branch of this package. To obtain the 
 
 ```
 using Pkg
-Pkg.add("url#single-item")
+Pkg.add("https://github.com/HenriDeh/DRL_MMULS#single-item")
 using DRL_MMULS
 ```
 
