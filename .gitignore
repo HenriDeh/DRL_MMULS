@@ -1,19 +1,21 @@
 *.bson
-*.csv
-scripts
 *.png
 ################################################################################
 #                          DrWatson Project Structure                          #
 ################################################################################
 
 # Folders to ignore - files may be too large, too many, etc. NOTE: EDIT IF NEEDED.
-data
+data/multi-item
+scripts/multi-item
+data/single-item/agents
+src/dashboard
+src/testbed/multi-item
+scripts/single-item/plotting
 videos
 plots
 papers
 notebooks
 _research
-
 ################################################################################
 #                                    Julia                                     #
 ################################################################################

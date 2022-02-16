@@ -6,12 +6,16 @@ const log2π =  Float32(log(2π))
 const nentropyconst = Float32((log2π + 1)/2)
 
 function normalize!(M)
-    m = mean(M)
     s = std(M)
-    M .-= m
     M ./= (s + eps(s)) 
 end
 
+"""
+    compute_advantages!(A, δ, λ, γ)
+
+Compute the GAE in-place in the A matrix given an error matrix of δ where each row represents the errors of the trajectory of a single simulation.
+λ and γ are the discount parameters.
+"""
 function compute_advantages!(A, δ, λ, γ)
     ls = typeof(δ)(getindex.(CartesianIndices(δ), 2))
     α = γ*λ
@@ -44,7 +48,7 @@ function L_clip(agent, state, action, advantage, log_prob_old)
     loss_entropy = -mean(normentropy.(σ))*agent.entropy_weight
     Flux.Zygote.ignore() do
         push!(agent.loss_actor, loss_actor)
-        push!(agent.loss_entropy, loss_entropy)#/agent.entropy_weight)
+        push!(agent.loss_entropy, loss_entropy)
     end
     return loss_actor + loss_entropy
 end
@@ -57,17 +61,17 @@ function L_value(agent, state, target_value)
     return loss_critic
 end
 
+"""
+    Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing)
+
+Main PPO training function. Run the PPO algorithm for `stop_iterations` to train `agent` at solving `env`. Hyperparameters are encoded in the `agent` object. 
+Use hook to run a `hook(agent, env)` function every iteration. For example, see TestEnvironment to evaluate periodically agent. Use the `Hook` object to input multiple hooks.
+"""
 function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing)
-    #clip_anneal_step = agent.clip_range/stop_iterations
-    critic_anneal_step = agent.critic_optimiser.eta/stop_iterations
-    actor_anneal_step = agent.actor_optimiser.eta/stop_iterations
     N = agent.n_actors
     T = agent.n_steps
     device = agent.device
-    env_step_count = 0
-    rewards_running_mean = 0f0
-    rewards_running_M2 = 1f0
-    rewards_running_std = 1f0
+    reward_normalizer = Normalizer()
     #Memory preallocations
     advantages = zeros(N, T) # Agent x Periods -> flatten corresponds to trajectory
     δ = similar(advantages)
@@ -96,24 +100,22 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             Threads.@threads for (env, action) in collect(zip(envs, eachcol(actions)))
                 env(collect(action))
             end
-            env_step_count += N
             rewards .= (reshape(map(reward, envs), 1, :))
-            tmp_mean = rewards_running_mean
-            rewards_running_mean = (env_step_count-N)/env_step_count*rewards_running_mean + sum(rewards)/env_step_count
-            rewards_running_M2 += sum((rewards .- tmp_mean).*(rewards .- rewards_running_mean))
-            rewards_running_std = max(sqrt(rewards_running_M2/(env_step_count-1)), 1f-6)
-            rewards ./= rewards_running_std
+            update(reward_normalizer, rewards)
+            reward_normalizer(rewards)
+            rewards ./= agent.n_steps
             push!(trajectory, rewards, :reward)
             next_states .= reduce(hcat, map(state, envs))
             push!(trajectory, next_states, :next_state)
             δ[:,t] = reshape((agent.γ .* cpu(agent.critic(next_states |> device)) .+ rewards .- cpu(agent.critic(states |> device))), :, 1)
         end
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
+        normalize!(advantages)
         push!(trajectory, reshape(advantages, 1, :), :advantage) 
         trajectory_d.traces = device(trajectory.traces)
         targets = agent.target_function(trajectory_d, agent)
         trajectory_d.traces.target_value .= targets
-        dataloader = Flux.Data.DataLoader(trajectory_d, batchsize = agent.batch_size, shuffle = true, partial = false)
+        dataloader = Flux.Data.DataLoader(trajectory_d , batchsize = agent.batch_size, shuffle = true, partial = false)
         for i in 1:1
             for (s, a, r, ns, alp, ad, tv) in dataloader
                 psa = Flux.params(agent.actor)
@@ -132,13 +134,12 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
                 Flux.update!(agent.critic_optimiser, psc, gsc)
             end
         end
-        #agent.clip_range = max(0, agent.clip_range - clip_anneal_step)
-        agent.actor_optimiser.eta = max(0, agent.actor_optimiser.eta - actor_anneal_step)
-        agent.critic_optimiser.eta = max(0, agent.critic_optimiser.eta - critic_anneal_step)
+        agent.clip_range = agent.clip_range * 0.25^(1/stop_iterations)
         hook(agent, env)
         empty!(trajectory)
         next!(prog, showvalues = [  ("Iteration ", it), 
-                                    show_value(hook.hooks[1]), 
+                                    show_value(hook)...,
+                                    ("LR ", ( agent.actor_optimiser.eta, agent.critic_optimiser.eta)), 
                                     ("Actor loss ", last(agent.loss_actor)), 
                                     ("Entropy loss ", last(agent.loss_entropy)), 
                                     ("√Critic loss", last(agent.loss_critic))])
