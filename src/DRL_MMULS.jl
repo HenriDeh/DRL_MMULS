@@ -3,6 +3,7 @@ using CUDA
 using Flux
 using InventoryModels
 using Requires
+using ReinforcementLearning
 
 export PPOPolicy, TD1_target, TDλ_target
 export Hook, EntropyAnnealing, TestEnvironment, Kscheduler
@@ -15,7 +16,7 @@ include("trajectory.jl")
 include("agent.jl")
 include("ppo.jl")
 include("hooks.jl")
-include("testbed/load_environment.jl")
+#include("testbed/load_environment.jl")
 include("dashboard/dashboard.jl")
 include("testbed/sspolicy_test.jl")
 
