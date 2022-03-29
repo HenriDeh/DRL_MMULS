@@ -12,12 +12,13 @@ function test_ss_policy(env::InventorySystem, s, S, n=1000)
 end
 
 function test_agent(agent, env, n_sims = 1000)
-    totreward = 0.0
+    RLBase.reset!(env)
     envs = [deepcopy(env) for _ in 1:n_sims]
     returns = zeros(size(envs)...)
-    while all(map(env -> !is_terminated(env),envs))
-        s = reduce(hcat, map(state, envs)) |> agent.device
-        a, σ = agent.actor(s)
+    while all(map(env -> !RLBase.is_terminated(env),envs))
+        s = reduce(hcat, map(state, envs)) |> s -> send_to_device(device(agent), s)
+        a_t, σ = agent.policy.policy(s, is_sampling = false)
+        a = dropdims(a_t, dims = 2)
         Threads.@threads for (env, action) in collect(zip(envs, eachcol(cpu(a))))
             env(collect(action))
         end
