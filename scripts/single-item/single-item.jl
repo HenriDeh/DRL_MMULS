@@ -12,13 +12,13 @@ leadtime_d = 2
 shortage_db = 25.
 shortages_dls = 75.
 setup_d = 320.
-CV_d = 0.5
+CV_d = 0.2
 #test values
 leadtimes = [0, 1, 4,8]
 shortages_b = [10, 25, 50]
 shortages_ls = [50, 75, 100]
 setups = [80., 1280.]
-CVs = [0.3, 0.7]
+CVs = [0.1, 0.3]
 lostsales = [false, true]
 #Iterators
 n = sum(length.([leadtimes, shortages_b, setups, CVs]))
@@ -55,7 +55,7 @@ i_lostsales = repeat(lostsales, inner = n)
 forecast_horizon = 32
 
 #train parameters
-μ_distributions =  [Uniform(0.2μ,1.8μ)]#, Uniform(5,15), Uniform(1,10), Uniform(20, 30)]
+μ_distributions =  [Uniform(0.2μ,1.8μ)]
 
 #parameters of agents
 policies = [sSPolicy(), RQPolicy(), QPolicy()]
@@ -72,22 +72,22 @@ end
 #presolve testbed
 function solve()
     CSV.write("data/single-item/scarf_testbed.csv", DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], forecast_id = Int[], opt_cost = Float64[], opt_MC_std = Float64[], solve_time_s = Float64[]))
-    p = Progress(500*22)
+    p = Progress(18*22)
     Threads.@threads for (leadtime, shortage, setup, CV, lostsale) in collect(zip(i_leadtimes, i_shortages, i_setups, i_CVs, i_lostsales))
-        scarf_df = DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], forecast_id = Int[], avg_cost = Float64[], MC_std = Float64[], solve_time_s = Float64[])
         for (f_ID, forecast) in collect(enumerate(forecasts))
-            env = sl_sip(holding, shortage, setup, CV, 0, forecast, leadtime*μ, leadtime, lostsales = lostsale, horizon = 32, periods = 20)
+            scarf_df = DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], forecast_id = Int[], avg_cost = Float64[], MC_std = Float64[], solve_time_s = Float64[])
+            env = sl_sip(holding, shortage, setup, CV, 0, forecast, leadtime*μ, leadtime, lostsales = lostsale, horizon = 32, periods = 72)
             instance = Scarf.Instance(env, 0.99)
             instance.backlog = true
             time = @elapsed Scarf.DP_sS(instance, 0.1)
             (cost, std) = test_ss_policy(env, instance.s, instance.S)
             push!(scarf_df, [leadtime, shortage, setup, lostsale, CV, f_ID, cost, std, time])
+            CSV.write("data/single-item/scarf_testbed.csv", scarf_df, append = true)
             ProgressMeter.next!(p)
         end
-        CSV.write("data/single-item/scarf_testbed.csv", scarf_df, append = true)
     end
 end
-#solve()#uncomment this to resolve the testbed with DP method
+solve()#uncomment this to resolve the testbed with DP method
 
 #train N agents per setup
 function ppo_testbed()
