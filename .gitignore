@@ -8,6 +8,7 @@
 data/multi-item
 scripts/multi-item
 data/single-item/agents
+data
 data/backup
 src/dashboard
 src/testbed/multi-item
