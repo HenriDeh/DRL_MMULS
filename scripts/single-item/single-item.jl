@@ -1,8 +1,8 @@
 using DRL_MMULS
 using InventoryModels
-using Distributions, Flux, BSON, CSV, DataFrames, ProgressMeter
+using Distributions, Flux, BSON, CSV, DataFrames, ProgressMeter, Random
 using CUDA
-
+Random.seed!(0)
 #device selection, change to `cpu` if you do not have an Nvidia compatible GPU.
 device = gpu
 #default parameters of train and test environments.
