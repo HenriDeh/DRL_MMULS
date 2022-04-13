@@ -2,6 +2,9 @@
 using Statistics, Flux, ProgressMeter, LinearAlgebra
 import Flux: mse, cpu, gpu
 
+include("trajectory.jl")
+include("agent.jl")
+
 const log2π =  Float32(log(2π))
 const nentropyconst = Float32((log2π + 1)/2)
 
