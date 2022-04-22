@@ -3,7 +3,8 @@
 ################################################################################
 #                          DrWatson Project Structure                          #
 ################################################################################
-
+# Files to ignore
+test.jl
 # Folders to ignore - files may be too large, too many, etc. NOTE: EDIT IF NEEDED.
 data/multi-item
 scripts/multi-item
