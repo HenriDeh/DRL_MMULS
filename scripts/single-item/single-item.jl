@@ -10,7 +10,7 @@ import ParameterSchedulers.Scheduler
 Random.seed!(0)
 #device selection, change to `cpu` if you do not have an Nvidia compatible GPU.
 device = gpu
-test_periods = 104
+test_periods = 400
 #default parameters of train and test environments.
 μ = 10.
 holding = 1.
@@ -133,7 +133,7 @@ function ppo_testbed()
                 tester2 = TestEnvironment(sl_sip(holding, shortage, setup, CV, 0, [(1 + 0.5*sin(4*t*π/104))*μ for t in 1:104], leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, policy = policy, periods = test_periods), 100, 100)
 
                 time = @elapsed run(agent_d, env, stop_iterations = stop_iterations, hook = Hook(tester, tester2))
-                p = lineplot(first.(tester.log), xlim = (minimum([tester.log; tester2.log]), maximum([tester.log; tester2.log])))
+                p = lineplot(first.(tester.log), ylim = (minimum([first.(tester.log); first.(tester2.log)]), maximum([first.(tester.log); first.(tester2.log)])))
                 lineplot!(p, first.(tester2.log))
                 display(p)
                 #test on each forecast
