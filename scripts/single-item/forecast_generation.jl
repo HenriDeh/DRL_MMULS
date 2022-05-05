@@ -17,29 +17,25 @@ end
 """Seasonal trends"""
 
 fs = [1, 2, 4]
-As = [0.5, 0.8]
-for f in fs, A in As
+for f in fs
     global ID += 1
-    fc = [(1 + A*sin(f*t*π/T))*μ for t in 1:H]
-    CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Seasonnal_$(f)_$A", forecast = [fc]), append = true)
+    fc = [(1 + 0.5*sin(f*t*π/T))*μ for t in 1:H]
+    CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Seasonnal_$(f)", forecast = [fc]), append = true)
 end
 
 
 """Growth trends"""
 
-starts = [0.5, 0.3]
-for s in starts 
-    global ID += 1
-    fc = LinRange(s*μ, (1 + s)*μ, H) |> collect
-    CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Growth_$s", forecast = [fc]), append = true)
-end
+s = 0.5
+global ID += 1
+fc = LinRange(s*μ, (1 + s)*μ, H) |> collect
+CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Growth_$s", forecast = [fc]), append = true)
+
 
 
 
 """Decline trends"""
 
-for s in starts 
-    global ID += 1
-    fc = LinRange((1+s)*μ, s*μ, H) |> collect
-    CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Decline_$s", forecast = [fc]), append = true)
-end
+global ID += 1
+fc = LinRange((2-s)*μ, s*μ, H) |> collect
+CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Decline_$s", forecast = [fc]), append = true)

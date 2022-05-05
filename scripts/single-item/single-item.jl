@@ -63,7 +63,7 @@ i_lostsales = repeat(lostsales, inner = n)
 μ_distributions =  [Uniform(0,20)]
 
 #parameters of agents
-policies = [sSPolicy(), RQPolicy(), QPolicy()]
+policies = [sSPolicy()]
 
 #load forecasts
 forecast_df = CSV.read("data/single-item/forecasts.csv", DataFrame)
@@ -77,7 +77,7 @@ end
 #presolve testbed
 function solve()
     CSV.write("data/single-item/scarf_testbed.csv", DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], forecast_id = Int[], opt_cost = Float64[], opt_MC_std = Float64[], solve_time_s = Float64[]))
-    p = Progress(6*22)
+    p = Progress(length(forecasts)*22)
     Threads.@threads for (leadtime, shortage, setup, CV, lostsale) in collect(zip(i_leadtimes, i_shortages, i_setups, i_CVs, i_lostsales))
         for (f_ID, forecast) in collect(enumerate(forecasts))
             scarf_df = DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], forecast_id = Int[], avg_cost = Float64[], MC_std = Float64[], solve_time_s = Float64[])
@@ -94,7 +94,7 @@ function solve()
 end
 #solve()#uncomment this to resolve the testbed with DP method
 
-Random.seed!(1) #new seed to reproduce correctly if the previous line is uncommented
+
 #hyperparameters
 steps_per_episode = 52
 batch_size = 252
@@ -123,21 +123,19 @@ function ppo_testbed()
             println("Solving LT= $leadtime, b=$shortage, K=$setup, CV = $CV, lostsales = $lostsale, policy = $policy, μ_distribution = $μ_distribution")
             for n in 1:N
                 agent_id += 1
-                println("agent $agent_id / 660")
-                env = sl_sip(holding, shortage, setup, CV, 0.,μ_distribution, Uniform(-5*(leadtime+1),10*(leadtime + 1)), leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = steps_per_episode, policy = policy)
+                Random.seed!(agent_id) #to reprocude correctly if restarted
+                println("agent $agent_id / $(N*length(μ_distributions)*length(policies)*22)")
+                #=env = sl_sip(holding, shortage, setup, CV, 0.,μ_distribution, Uniform(-5*(leadtime+1),10*(leadtime + 1)), leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = steps_per_episode, policy = policy)
                 agent_d = PPOPolicy(env, actor_optimiser = Scheduler(actor_schedule, ADAM()),  critic_optimiser = Scheduler(critic_schedule, ADAM()), n_hidden = 128,
                             γ = 0.99f0,λ = 0.90f0, clip_range = 0.2f0, entropy_weight = 1f-2, n_actors = n_actors, n_epochs = n_epochs, batch_size = batch_size,
                             target_function = TD1_target, device = gpu)
-                
-                tester = TestEnvironment(sl_sip(holding, shortage, setup, CV, 0, fill(10.0,104), leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, policy = policy, periods = test_periods), 100, 100)
-                tester2 = TestEnvironment(sl_sip(holding, shortage, setup, CV, 0, [(1 + 0.5*sin(4*t*π/104))*μ for t in 1:104], leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, policy = policy, periods = test_periods), 100, 100)
-
-                time = @elapsed run(agent_d, env, stop_iterations = stop_iterations, hook = Hook(tester, tester2))
-                p = lineplot(first.(tester.log), ylim = (minimum([first.(tester.log); first.(tester2.log)]), maximum([first.(tester.log); first.(tester2.log)])))
-                lineplot!(p, first.(tester2.log))
-                display(p)
+                time = @elapsed run(agent_d, env, stop_iterations = stop_iterations)=#
+                time = 0.
                 #test on each forecast
+                BSON.@load "data/single-item/agents/ppo_agent_$agent_id.bson" agent 
+                agent_d = device(agent)
                 ppo_df = DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], policy = String[], mu_dist_bounds = String[], avg_cost = Float64[], MC_std = [], train_time_s = Float64[], forecast_id = Int[], agent_id=Int[])
+                Random.seed!(agent_id*1000) #In case we must reevaluate agents but not retrain
                 @showprogress "Benchmarking..." for (f_ID, forecast) in collect(enumerate(forecasts))
                     test_env = sl_sip(holding, shortage, setup, CV, 0, forecast, leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, policy = policy, periods = test_periods)
                     cost, std = test_agent(agent_d, test_env, 1000)
@@ -145,7 +143,7 @@ function ppo_testbed()
                 end
                 agent = cpu(agent_d)
                 CSV.write("data/single-item/ppo_testbed.csv", ppo_df, append = true)
-                BSON.@save "data/single-item/agents/ppo_agent_$agent_id.bson" agent tester tester2
+                #BSON.@save "data/single-item/agents/ppo_agent_$agent_id.bson" agent
             end  
         end
     end
