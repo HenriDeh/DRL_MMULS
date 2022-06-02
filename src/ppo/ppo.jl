@@ -142,7 +142,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         empty!(trajectory)
         next!(prog, showvalues = [  ("Iteration ", it), 
                                     show_value(hook)...,
-                                    ("LR ", ( agent.actor_optimiser.eta, agent.critic_optimiser.eta)), 
+                                    ("LR ", ( agent.actor_optimiser.optim.eta, agent.critic_optimiser.optim.eta)), 
                                     ("Actor loss ", last(agent.loss_actor)), 
                                     ("Entropy loss ", last(agent.loss_entropy)), 
                                     ("√Critic loss", last(agent.loss_critic))])

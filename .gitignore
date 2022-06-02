@@ -6,11 +6,14 @@
 ################################################################################
 #                          DrWatson Project Structure                          #
 ################################################################################
-
+# Files to ignore
+test.jl
 # Folders to ignore - files may be too large, too many, etc. NOTE: EDIT IF NEEDED.
 data/multi-item
 scripts/multi-item
+data/single-item/agents
 data
+data/backup
 src/dashboard
 src/testbed/multi-item
 scripts/single-item/plotting
@@ -425,3 +428,5 @@ $RECYCLE.BIN/
 
 ## Acknowledgements
 # Many thanks to `https://gitignore.io/`, written and maintained by Joe Blau, which contributed much material to this gitignore file.
+backup.zip
+data/single-item/backup/agents.7z

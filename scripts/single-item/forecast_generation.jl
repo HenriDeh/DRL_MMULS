@@ -1,55 +1,41 @@
 #script used to generate forecasts.csv
 using Distributions, CSV, DataFrames
-CSV.write("data/single-item/forecasts.csv", DataFrame(ID = [],trend = [], deviation = [], forecast = []))
+CSV.write("data/single-item/forecasts.csv", DataFrame(ID = [],trend = [], forecast = []))
 T = 52
-H = 52
+H = 432
 μ = 10
-n = 50
-ϱs = [2, 4]
 ID = 0
-"""Constant trends"""
+"""Constant trend"""
 
-for ϱ in ϱs
-    δ = Uniform(-ϱ, ϱ)
-    for i in 1:n
-        global ID += 1
-        fc = [μ + rand(δ) for i in 1:T]
-        CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Constant", varrho = ϱ, forecast = [fc]), append = true)
-    end
+shifts = [0.5,1.,1.5]
+for s in shifts
+    global ID += 1
+    fc = [s*μ for i in 1:H]
+    CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Constant_$s", forecast = [fc]), append = true)
 end
 
 """Seasonal trends"""
 
-fs = [1, 2]
-for ϱ in ϱs
-    δ = Uniform(-ϱ, ϱ)
-    for f in fs
-        for i in 1:n
-            global ID += 1
-            fc = [(1 + 0.5*sin(2f*t*π/H))*μ + rand(δ) for t in 1:T]
-            CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Seasonnal$f", varrho = ϱ, forecast = [fc]), append = true)
-        end
-    end
+fs = [1, 2, 4]
+for f in fs
+    global ID += 1
+    fc = [(1 + 0.5*sin(f*t*π/T))*μ for t in 1:H]
+    CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Seasonnal_$(f)", forecast = [fc]), append = true)
 end
+
 
 """Growth trends"""
 
-for ϱ in ϱs
-    δ = Uniform(-ϱ, ϱ)
-    for i in 1:n
-        global ID += 1
-        fc = [(0.8+0.4*t/T)*μ + rand(δ) for t in 1:T]
-        CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Growth", varrho = ϱ, forecast = [fc]), append = true)
-    end
-end
+s = 0.5
+global ID += 1
+fc = LinRange(s*μ, (1 + s)*μ, H) |> collect
+CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Growth_$s", forecast = [fc]), append = true)
+
+
+
 
 """Decline trends"""
 
-for ϱ in ϱs
-    δ = Uniform(-ϱ, ϱ)
-    for i in 1:n
-        global ID += 1
-        fc = [(1.2-0.4*t/T)*μ + rand(δ) for t in 1:T]
-        CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Decline", varrho = ϱ, forecast = [fc]), append = true)
-    end
-end
+global ID += 1
+fc = LinRange((2-s)*μ, s*μ, H) |> collect
+CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Decline_$s", forecast = [fc]), append = true)
