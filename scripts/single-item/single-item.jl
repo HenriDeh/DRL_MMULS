@@ -97,7 +97,7 @@ end
 
 #hyperparameters
 steps_per_episode = 52
-batch_size = 252
+batch_size = 256
 n_actors = 30
 stop_iterations = 10000
 warmup_iterations = 1000
