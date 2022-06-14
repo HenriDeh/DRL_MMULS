@@ -9,8 +9,7 @@ test.jl
 data/multi-item
 scripts/multi-item
 data/single-item/agents
-data
-data/backup
+data/single-item/backup
 src/dashboard
 src/testbed/multi-item
 scripts/single-item/plotting
