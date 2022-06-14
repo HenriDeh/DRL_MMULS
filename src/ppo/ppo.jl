@@ -100,7 +100,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             push!(trajectory, states, :state)
             push!(trajectory, actions, :action)
             push!(trajectory, action_log_probs, :action_log_prob)
-            Threads.@threads for (env, action) in collect(zip(envs, eachcol(actions)))
+            for (env, action) in collect(zip(envs, eachcol(actions)))
                 env(collect(action))
             end
             rewards .= (reshape(map(reward, envs), 1, :))
@@ -110,7 +110,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             push!(trajectory, rewards, :reward)
             next_states .= reduce(hcat, map(state, envs))
             push!(trajectory, next_states, :next_state)
-            δ[:,t] = reshape((agent.γ .* cpu(agent.critic(next_states |> device)) .+ rewards .- cpu(agent.critic(states |> device))), :, 1)
+            δ[:,t] .= reshape((agent.γ .* cpu(agent.critic(next_states |> device)) .+ rewards .- cpu(agent.critic(states |> device))), :, 1)
         end
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
         normalize!(advantages)

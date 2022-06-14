@@ -97,9 +97,9 @@ end
 
 #hyperparameters
 steps_per_episode = 52
-batch_size = 252
+batch_size = 256
 n_actors = 30
-stop_iterations = 15000
+stop_iterations = 10000
 warmup_iterations = 1000
 n_epochs = 5
 
@@ -125,15 +125,20 @@ function ppo_testbed()
                 agent_id += 1
                 Random.seed!(agent_id) #to reprocude correctly if restarted
                 println("agent $agent_id / $(N*length(μ_distributions)*length(policies)*22)")
-                #=env = sl_sip(holding, shortage, setup, CV, 0.,μ_distribution, Uniform(-5*(leadtime+1),10*(leadtime + 1)), leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = steps_per_episode, policy = policy)
+                env = sl_sip(holding, shortage, setup, CV, 0.,μ_distribution, Uniform(-5*(leadtime+1),10*(leadtime + 1)), leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = steps_per_episode, policy = policy)
                 agent_d = PPOPolicy(env, actor_optimiser = Scheduler(actor_schedule, ADAM()),  critic_optimiser = Scheduler(critic_schedule, ADAM()), n_hidden = 128,
                             γ = 0.99f0,λ = 0.90f0, clip_range = 0.2f0, entropy_weight = 1f-2, n_actors = n_actors, n_epochs = n_epochs, batch_size = batch_size,
                             target_function = TD1_target, device = gpu)
-                time = @elapsed run(agent_d, env, stop_iterations = stop_iterations)=#
-                time = 0.
+                tester = TestEnvironment(sl_sip(holding, shortage, setup, CV, 0, forecasts[2], leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = 400), 100, 100)
+                tester2 = TestEnvironment(sl_sip(holding, shortage, setup, CV, 0, forecasts[6], leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = 400), 100, 100)
+                tester3 = TestEnvironment(sl_sip(holding, shortage, setup, CV, 0, forecasts[1], leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = 400), 100, 100)
+                
+                time = @elapsed run(agent_d, env, stop_iterations = stop_iterations, hook = Hook(tester, tester2, tester3))
+                p = lineplot(first.(tester.log), yscale = y-> sign(y)*log10(abs(y)));
+                lineplot!(p, first.(tester2.log));
+                lineplot!(p, first.(tester3.log));
+                display(p)
                 #test on each forecast
-                BSON.@load "data/single-item/agents/ppo_agent_$agent_id.bson" agent 
-                agent_d = device(agent)
                 ppo_df = DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], policy = String[], mu_dist_bounds = String[], avg_cost = Float64[], MC_std = [], train_time_s = Float64[], forecast_id = Int[], agent_id=Int[])
                 Random.seed!(agent_id*1000) #In case we must reevaluate agents but not retrain
                 @showprogress "Benchmarking..." for (f_ID, forecast) in collect(enumerate(forecasts))
@@ -143,7 +148,7 @@ function ppo_testbed()
                 end
                 agent = cpu(agent_d)
                 CSV.write("data/single-item/ppo_testbed.csv", ppo_df, append = true)
-                #BSON.@save "data/single-item/agents/ppo_agent_$agent_id.bson" agent
+                BSON.@save "data/single-item/agents/ppo_agent_$agent_id.bson" agent
             end  
         end
     end
