@@ -1,3 +1,7 @@
+using ParameterSchedulers
+import ParameterSchedulers.Scheduler
+export EntropyWeightDecayer
+
 show_value(h::Any) = ("$(typeof(h))", "hook")
 
 struct Hook{H<:Tuple}
@@ -43,6 +47,19 @@ function (te::TestEnvironment)(agent::PPOPolicy, envi)
     te.count % te.every == 0 || return 0.
     return test_agent(agent, te)[1]
 end
+
+mutable struct EntropyWeightDecayer 
+    schedule
+    t::Int
+end
+
+EntropyWeightDecayer(schedule) = EntropyWeightDecayer(schedule, 1)
+
+function (ewd::EntropyWeightDecayer)(agent, env)
+    ewd.t += 1
+    agent.entropy_weight = ewd.schedule(ewd.t)
+end
+
 
 function test_agent(agent, te::TestEnvironment)
     totreward = 0.

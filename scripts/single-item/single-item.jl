@@ -1,5 +1,4 @@
 using DRL_MMULS
-using InventoryModels
 using Distributions, Flux, BSON, CSV, DataFrames, ProgressMeter, Random
 using CUDA
 using UnicodePlots, ParameterSchedulers
@@ -77,7 +76,7 @@ end
 #presolve testbed
 function solve()
     CSV.write("data/single-item/scarf_testbed.csv", DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], forecast_id = Int[], opt_cost = Float64[], opt_MC_std = Float64[], solve_time_s = Float64[]))
-    p = Progress(length(forecasts)*22)
+    p = Progress(length(forecasts)*n)
     Threads.@threads for (leadtime, shortage, setup, CV, lostsale) in collect(zip(i_leadtimes, i_shortages, i_setups, i_CVs, i_lostsales))
         for (f_ID, forecast) in collect(enumerate(forecasts))
             scarf_df = DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], forecast_id = Int[], avg_cost = Float64[], MC_std = Float64[], solve_time_s = Float64[])
@@ -98,13 +97,13 @@ end
 #hyperparameters
 steps_per_episode = 52
 batch_size = 256
-n_actors = 30
-stop_iterations = 10000
-warmup_iterations = 1000
-n_epochs = 5
+n_actors = 50
+stop_iterations = 15000
+n_epochs = 3
 
 #Learning rate schedules
-actor_updates = stop_iterations*n_actors*steps_per_episode÷batch_size
+warmup_iterations = 2000
+actor_updates = stop_iterations*((n_actors*steps_per_episode)÷batch_size)
 critic_updates = actor_updates*n_epochs
 warmup = Int(round(warmup_iterations/stop_iterations*actor_updates))
 actor_warmup = Triangle(λ0 = 1f-6, λ1 = 1f-5, period = 2*warmup)
@@ -114,14 +113,14 @@ critic_schedule = SinExp(λ0 = 1f-4, λ1 = 1f-3, period = (actor_updates-2*warmu
 
 #train N agents per setup
 function ppo_testbed()
-    N = 10 # agents trained per environment
+    N = 1 # agents trained per environment
     CSV.write("data/single-item/ppo_testbed.csv", DataFrame(leadtime = Int[], shortage = Float64[], setup = Int[], lostsales = Bool[], CV = Float64[], policy = String[], mu_dist_bounds = String[], avg_cost = Float64[], MC_std = [], train_time_s = Float64[], forecast_id = Int[], agent_id=Int[]))
     agent_id = 0
-    for μ_distribution in μ_distributions,
-        policy in policies
-        for (leadtime, shortage, setup, CV, lostsale) in zip(i_leadtimes, i_shortages, i_setups, i_CVs, i_lostsales) 
-            println("Solving LT= $leadtime, b=$shortage, K=$setup, CV = $CV, lostsales = $lostsale, policy = $policy, μ_distribution = $μ_distribution")
-            for n in 1:N
+    for n in 1:N
+        for μ_distribution in μ_distributions,
+            policy in policies
+            for (leadtime, shortage, setup, CV, lostsale) in zip(i_leadtimes, i_shortages, i_setups, i_CVs, i_lostsales) 
+                println("Solving LT= $leadtime, b=$shortage, K=$setup, CV = $CV, lostsales = $lostsale, policy = $policy, μ_distribution = $μ_distribution")
                 agent_id += 1
                 Random.seed!(agent_id) #to reprocude correctly if restarted
                 println("agent $agent_id / $(N*length(μ_distributions)*length(policies)*22)")
@@ -134,7 +133,7 @@ function ppo_testbed()
                 tester3 = TestEnvironment(sl_sip(holding, shortage, setup, CV, 0, forecasts[1], leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = 400), 100, 100)
                 
                 time = @elapsed run(agent_d, env, stop_iterations = stop_iterations, hook = Hook(tester, tester2, tester3))
-                p = lineplot(first.(tester.log), yscale = y-> sign(y)*log10(abs(y)));
+                p = lineplot(first.(tester.log));
                 lineplot!(p, first.(tester2.log));
                 lineplot!(p, first.(tester3.log));
                 display(p)

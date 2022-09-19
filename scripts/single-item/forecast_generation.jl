@@ -2,7 +2,7 @@
 using Distributions, CSV, DataFrames
 CSV.write("data/single-item/forecasts.csv", DataFrame(ID = [],trend = [], forecast = []))
 T = 52
-H = 432
+H = 136
 μ = 10
 ID = 0
 """Constant trend"""

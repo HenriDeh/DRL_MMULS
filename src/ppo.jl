@@ -1,13 +1,15 @@
 #import ReinforcementLearningZoo: PPOTrajectory, CircularArraySARTTrajectory, Trajectory, CircularArrayTrajectory
-using Statistics, Flux, ProgressMeter, LinearAlgebra
+using Statistics, Flux, ProgressMeter, LinearAlgebra, Base.Threads, StaticArrays
 import Flux: mse, cpu, gpu
 
 const log2π =  Float32(log(2π))
 const nentropyconst = Float32((log2π + 1)/2)
 
 function normalize!(M)
+    m = mean(M)
     s = std(M)
     M ./= (s + eps(s)) 
+    M .-= m
 end
 
 """
@@ -35,7 +37,7 @@ function TDλ_target(trajectory, agent)
 end
 
 function normlogpdf(μ, σ, x; ϵ = eps(Float32))
-   @. -(((x - μ)/(σ + ϵ))^2 + log2π) / 2.0f0 - log(σ + ϵ)
+   @fastmath @. -(((x - μ)/(σ + ϵ))^2 + log2π) / 2.0f0 - log(σ + ϵ)
 end
 
 normentropy(σ, ϵ = eps(Float32)) = nentropyconst + log(σ + ϵ)
@@ -48,7 +50,7 @@ function L_clip(agent, state, action, advantage, log_prob_old)
     loss_entropy = -mean(normentropy.(σ))*agent.entropy_weight
     Flux.Zygote.ignore() do
         push!(agent.loss_actor, loss_actor)
-        push!(agent.loss_entropy, loss_entropy)
+        push!(agent.loss_entropy, mean(σ))
     end
     return loss_actor + loss_entropy
 end
@@ -67,17 +69,17 @@ end
 Main PPO training function. Run the PPO algorithm for `stop_iterations` to train `agent` at solving `env`. Hyperparameters are encoded in the `agent` object. 
 Use hook to run a `hook(agent, env)` function every iteration. For example, see TestEnvironment to evaluate periodically agent. Use the `Hook` object to input multiple hooks.
 """
-function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing)
+function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing, show_progress = true)
     N = agent.n_actors
     T = agent.n_steps
     device = agent.device
     reward_normalizer = Normalizer()
     #Memory preallocations
-    advantages = zeros(N, T) # Agent x Periods -> flatten corresponds to trajectory
+    advantages = @MMatrix zeros(N, T) # Agent x Periods -> flatten corresponds to trajectory
     δ = similar(advantages)
-    states = zeros(state_size(env), N)
-    actions = zeros(action_size(env), N)
-    rewards = zeros(1, N)
+    states = @MMatrix zeros(state_size(env), N)
+    actions = @MMatrix zeros(action_size(env), N)
+    rewards = @MMatrix zeros(1, N)
     next_states = similar(states)
     μ = similar(actions)
     σ = similar(actions)
@@ -85,19 +87,19 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     action_log_probs = similar(actions)
     trajectory = PPOTrajectory(N*T, state_size(env), action_size(env), device = cpu)
     trajectory_d = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
-    prog = Progress(stop_iterations)
+    prog = Progress(stop_iterations, enabled = show_progress)
     for it in 1:stop_iterations
         envs = [deepcopy(env) for _ in 1:N]
         for t in 1:agent.n_steps
             states .= reduce(hcat, map(state, envs))
             μ, σ = agent.actor(states |> device) |> cpu
-            z .= randn(size(σ))
+            z .= randn(size(σ)) 
             actions .= μ .+ σ .* z 
             action_log_probs .= normlogpdf(μ, σ, actions)
             push!(trajectory, states, :state)
             push!(trajectory, actions, :action)
             push!(trajectory, action_log_probs, :action_log_prob)
-            for (env, action) in collect(zip(envs, eachcol(actions)))
+            Threads.@threads for (env, action) in collect(zip(envs, eachcol(actions)))
                 env(collect(action))
             end
             rewards .= (reshape(map(reward, envs), 1, :))
@@ -107,7 +109,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             push!(trajectory, rewards, :reward)
             next_states .= reduce(hcat, map(state, envs))
             push!(trajectory, next_states, :next_state)
-            δ[:,t] .= reshape((agent.γ .* cpu(agent.critic(next_states |> device)) .+ rewards .- cpu(agent.critic(states |> device))), :, 1)
+            @inbounds δ[:,t] .= reshape((agent.γ .* cpu(agent.critic(next_states |> device)) .+ rewards .- cpu(agent.critic(states |> device))), :, 1)
         end
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
         normalize!(advantages)
@@ -117,7 +119,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         trajectory_d.traces.target_value .= targets
         dataloader = Flux.Data.DataLoader(trajectory_d , batchsize = agent.batch_size, shuffle = true, partial = false)
         for i in 1:1
-            for (s, a, r, ns, alp, ad, tv) in dataloader
+            for (s, a, r, ns, alp, ad, tv) = dataloader
                 psa = Flux.params(agent.actor)
                 gsa = gradient(psa) do
                     L_clip(agent, s, a, ad, alp)    
@@ -126,7 +128,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
             end
         end
         for i in 1:agent.n_epochs
-            for (s, a, r, ns, alp, ad, tv) in dataloader
+            for (s, a, r, ns, alp, ad, tv) = dataloader
                 psc = Flux.params(agent.critic)
                 gsc = gradient(psc) do
                     L_value(agent, s, tv)    
@@ -134,14 +136,13 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
                 Flux.update!(agent.critic_optimiser, psc, gsc)
             end
         end
-        agent.clip_range = agent.clip_range * 0.25^(1/stop_iterations)
         hook(agent, env)
         empty!(trajectory)
         next!(prog, showvalues = [  ("Iteration ", it), 
                                     show_value(hook)...,
                                     ("LR ", ( agent.actor_optimiser.optim.eta, agent.critic_optimiser.optim.eta)), 
                                     ("Actor loss ", last(agent.loss_actor)), 
-                                    ("Entropy loss ", last(agent.loss_entropy)), 
+                                    ("Actor std ", last(agent.loss_entropy)), 
                                     ("√Critic loss", last(agent.loss_critic))])
     end
 end
