@@ -1,6 +1,6 @@
 using ParameterSchedulers
 import ParameterSchedulers.Scheduler
-export EntropyWeightDecayer
+export EntropyWeightDecayer, EpsilonDecayer
 
 show_value(h::Any) = ("$(typeof(h))", "hook")
 
@@ -46,18 +46,6 @@ function (te::TestEnvironment)(agent::PPOPolicy, envi)
     te.count += 1
     te.count % te.every == 0 || return 0.
     return test_agent(agent, te)[1]
-end
-
-mutable struct EntropyWeightDecayer 
-    schedule
-    t::Int
-end
-
-EntropyWeightDecayer(schedule) = EntropyWeightDecayer(schedule, 1)
-
-function (ewd::EntropyWeightDecayer)(agent, env)
-    ewd.t += 1
-    agent.entropy_weight = ewd.schedule(ewd.t)
 end
 
 
@@ -154,4 +142,32 @@ function (n::Normalizer)(input)
     input .-= n.mean 
     input ./= n.std
 end
+
+mutable struct EntropyWeightDecayer 
+    schedule
+    t::Int
+end
+
+EntropyWeightDecayer(schedule) = EntropyWeightDecayer(schedule, 1)
+
+function (ewd::EntropyWeightDecayer)(agent, env)
+    ewd.t += 1
+    agent.entropy_weight = ewd.schedule(ewd.t)
+end
+
+show_value(ew::EntropyWeightDecayer) = ("Entropy weight ", ew.schedule(ew.t-1))
+
+mutable struct EpsilonDecayer
+    schedule
+    t::Int
+end
+
+EpsilonDecayer(schedule) = EpsilonDecayer(schedule, 1)
+
+function (ed::EpsilonDecayer)(agent, env) 
+    ed.t += 1
+    agent.clip_range = ed.schedule(ed.t)
+end
+
+show_value(ed::EpsilonDecayer) = ("clip range ", ed.schedule(ed.t-1))
 

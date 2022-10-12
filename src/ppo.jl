@@ -28,8 +28,8 @@ function compute_advantages!(A, δ, λ, γ)
     reverse!(A,dims = 2)
 end
 
-function TD1_target(trajectory, agent)
-    trajectory.traces[:reward] .+ agent.γ * agent.critic(trajectory.traces[:next_state]) 
+function TD1_target(r, ns, agent)
+    r .+ agent.γ .* agent.critic(ns) 
 end
 
 function TDλ_target(trajectory, agent)
@@ -72,6 +72,7 @@ Use hook to run a `hook(agent, env)` function every iteration. For example, see 
 function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> nothing, show_progress = true)
     N = agent.n_actors
     T = agent.n_steps
+    ϵ_factor = LinRange(agent.clip_range, 1/4*agent.clip_range, stop_iterations)
     device = agent.device
     reward_normalizer = Normalizer()
     #Memory preallocations
@@ -86,7 +87,7 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
     z = similar(actions)
     action_log_probs = similar(actions)
     trajectory = PPOTrajectory(N*T, state_size(env), action_size(env), device = cpu)
-    trajectory_d = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
+    #trajectory_d = PPOTrajectory(N*T, state_size(env), action_size(env), device = device)
     prog = Progress(stop_iterations, enabled = show_progress)
     for it in 1:stop_iterations
         envs = [deepcopy(env) for _ in 1:N]
@@ -114,28 +115,26 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
         compute_advantages!(advantages, δ, agent.γ, agent.λ)
         normalize!(advantages)
         push!(trajectory, reshape(advantages, 1, :), :advantage) 
-        trajectory_d.traces = device(trajectory.traces)
-        targets = agent.target_function(trajectory_d, agent)
-        trajectory_d.traces.target_value .= targets
-        dataloader = Flux.Data.DataLoader(trajectory_d , batchsize = agent.batch_size, shuffle = true, partial = false)
-        for i in 1:1
-            for (s, a, r, ns, alp, ad, tv) = dataloader
-                psa = Flux.params(agent.actor)
-                gsa = gradient(psa) do
-                    L_clip(agent, s, a, ad, alp)    
-                end
-                Flux.update!(agent.actor_optimiser, psa, gsa)
-            end
-        end
+        _dataloader = Flux.Data.DataLoader(trajectory, batchsize = agent.batch_size, shuffle = true, partial = false)
+        dataloader = device == gpu ? CuIterator(_dataloader) : dataloader
         for i in 1:agent.n_epochs
-            for (s, a, r, ns, alp, ad, tv) = dataloader
+            for (s, a, r, ns, alp, ad) = dataloader
+                tv = agent.target_function(r, ns, agent)
                 psc = Flux.params(agent.critic)
                 gsc = gradient(psc) do
                     L_value(agent, s, tv)    
                 end
                 Flux.update!(agent.critic_optimiser, psc, gsc)
+                if i == 1
+                    psa = Flux.params(agent.actor)
+                    gsa = gradient(psa) do
+                        L_clip(agent, s, a, ad, alp)    
+                    end
+                    Flux.update!(agent.actor_optimiser, psa, gsa)
+                end
             end
         end
+        #agent.clip_range = ϵ_factor[it]
         hook(agent, env)
         empty!(trajectory)
         next!(prog, showvalues = [  ("Iteration ", it), 

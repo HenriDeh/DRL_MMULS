@@ -1,0 +1,1335 @@
+The following modules were not unloaded:
+  (Use "module --force purge" to unload all):
+
+  1) tis/2018.01   2) releases/2020b
+wd before :
+/home/ucl/core/hdehaybe
+wd now :
+/globalscratch/users/h/d/hdehaybe/34015022
+/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS
+      From worker 3:	/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS
+  Activating project at `/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS`
+      From worker 4:	/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS
+      From worker 5:	/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS
+      From worker 2:	/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS
+      From worker 3:	  Activating project at `/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS`
+      From worker 4:	  Activating project at `/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS`
+      From worker 5:	  Activating project at `/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS`
+      From worker 2:	  Activating project at `/auto/globalscratch/users/h/d/hdehaybe/34015022/DRL_MMULS`
+Julia Version 1.8.1
+Commit afb6c60d69a (2022-09-06 15:09 UTC)
+Platform Info:
+  OS: Linux (x86_64-linux-gnu)
+  CPU: 64 × AMD EPYC 7313 16-Core Processor
+  WORD_SIZE: 64
+  LIBM: libopenlibm
+  LLVM: libLLVM-13.0.1 (ORCJIT, znver3)
+  Threads: 16 on 64 virtual cores
+Environment:
+  LD_LIBRARY_PATH = /opt/sw/noarch/manual/sticky-20180601/software/Julia/julia-1.8.1/lib
+
+CUDA
+----
+CUDA toolkit 11.7, artifact installation
+NVIDIA driver 510.73.8, for CUDA 11.6
+CUDA driver 11.7
+
+Libraries: 
+- CUBLAS: 11.10.1
+- CURAND: 10.2.10
+- CUFFT: 10.7.2
+- CUSOLVER: 11.3.5
+- CUSPARSE: 11.7.3
+- CUPTI: 17.0.0
+- NVML: 11.0.0+510.73.8
+- CUDNN: 8.30.2 (for CUDA 11.5.0)
+- CUTENSOR: 1.4.0 (for CUDA 11.5.0)
+
+Toolchain:
+- Julia: 1.8.1
+- LLVM: 13.0.1
+- PTX ISA support: 3.2, 4.0, 4.1, 4.2, 4.3, 5.0, 6.0, 6.1, 6.3, 6.4, 6.5, 7.0, 7.1, 7.2
+- Device capability support: sm_35, sm_37, sm_50, sm_52, sm_53, sm_60, sm_61, sm_62, sm_70, sm_72, sm_75, sm_80, sm_86
+
+1 device:
+  0: NVIDIA A100 80GB PCIe MIG 1g.10gb (sm_80, 9.491 GiB / 9.500 GiB available)
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 9 / 320
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 25 / 320
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 17 / 320
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 1 / 320
+      From worker 4:	Done in 4728.598894294 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 18 / 320
+      From worker 3:	Done in 4791.906764298 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 10 / 320
+      From worker 2:	Done in 4870.537905463 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 2 / 320
+      From worker 5:	Done in 4896.437913794 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 26 / 320
+      From worker 4:	Done in 4531.946285349 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 19 / 320
+      From worker 3:	Done in 4532.256638388 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 11 / 320
+      From worker 2:	Done in 4687.006912964 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 3 / 320
+      From worker 5:	Done in 4683.911606933 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 27 / 320
+      From worker 4:	Done in 4482.31446872 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 20 / 320
+      From worker 3:	Done in 4550.952181832 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 12 / 320
+      From worker 2:	Done in 4690.963859733 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 4 / 320
+      From worker 5:	Done in 4712.061346099 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 28 / 320
+      From worker 4:	Done in 4488.130415188 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 21 / 320
+      From worker 3:	Done in 4591.962831524 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 13 / 320
+      From worker 2:	Done in 4555.271371993 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 5 / 320
+      From worker 5:	Done in 4760.059295436 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 29 / 320
+      From worker 4:	Done in 4481.127500594 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 22 / 320
+      From worker 3:	Done in 4620.596630274 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 14 / 320
+      From worker 2:	Done in 4658.181681565 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 6 / 320
+      From worker 5:	Done in 4729.662603765 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 30 / 320
+      From worker 4:	Done in 4421.061515151 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 23 / 320
+      From worker 3:	Done in 4594.149375542 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 15 / 320
+      From worker 2:	Done in 4659.9755749 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 7 / 320
+      From worker 5:	Done in 4654.637811786 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 31 / 320
+      From worker 4:	Done in 4448.513911334 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 24 / 320
+      From worker 3:	Done in 4471.180837301 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 16 / 320
+      From worker 2:	Done in 4798.651700702 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 8 / 320
+      From worker 5:	Done in 4557.141238118 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 32 / 320
+      From worker 4:	Done in 4470.46743437 seconds
+      From worker 4:	Benchmarking...
+      From worker 3:	Done in 4350.122811218 seconds
+      From worker 3:	Benchmarking...
+      From worker 5:	Done in 4068.164147961 seconds
+      From worker 5:	Benchmarking...
+      From worker 2:	Done in 4190.753535195 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 11 / 320
+      From worker 5:	agent 35 / 320
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 27 / 320
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 19 / 320
+      From worker 3:	Done in 4473.648999548 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 20 / 320
+      From worker 4:	Done in 4601.101685771 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 28 / 320
+      From worker 2:	Done in 4635.678523411 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 12 / 320
+      From worker 5:	Done in 4664.760480833 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 36 / 320
+      From worker 3:	Done in 4462.807430396 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 21 / 320
+      From worker 4:	Done in 4575.356921883 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 29 / 320
+      From worker 5:	Done in 4589.279892315 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 37 / 320
+      From worker 2:	Done in 4765.467977139 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 13 / 320
+      From worker 3:	Done in 4576.68269481 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 22 / 320
+      From worker 4:	Done in 4456.366437584 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 30 / 320
+      From worker 5:	Done in 4641.787100431 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 38 / 320
+      From worker 2:	Done in 4621.125824806 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 14 / 320
+      From worker 3:	Done in 4503.544975428 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 23 / 320
+      From worker 4:	Done in 4479.072544609 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 31 / 320
+      From worker 5:	Done in 4597.009788792 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 39 / 320
+      From worker 2:	Done in 4688.657816897 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 15 / 320
+      From worker 3:	Done in 4482.865465101 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 24 / 320
+      From worker 4:	Done in 4533.485306998 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 32 / 320
+      From worker 5:	Done in 4648.465434494 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 40 / 320
+      From worker 2:	Done in 4595.69070439 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 16 / 320
+      From worker 3:	Done in 4446.494549469 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 25 / 320
+      From worker 4:	Done in 4540.476015158 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 33 / 320
+      From worker 5:	Done in 4518.231226969 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 41 / 320
+      From worker 2:	Done in 4702.785016915 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 17 / 320
+      From worker 3:	Done in 4413.289042026 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 26 / 320
+      From worker 4:	Done in 4520.035023021 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 34 / 320
+      From worker 5:	Done in 4543.556923612 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 42 / 320
+      From worker 2:	Done in 4725.759169916 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 18 / 320
+      From worker 3:	Done in 4389.699448453 seconds
+      From worker 3:	Benchmarking...
+      From worker 4:	Done in 4377.692612237 seconds
+      From worker 4:	Benchmarking...
+      From worker 5:	Done in 4175.432576738 seconds
+      From worker 5:	Benchmarking...
+      From worker 2:	Done in 4005.210122573 seconds
+      From worker 2:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 29 / 320
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 21 / 320
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 37 / 320
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 45 / 320
+      From worker 4:	Done in 4468.615509166 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 38 / 320
+      From worker 3:	Done in 4484.471505498 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 30 / 320
+      From worker 5:	Done in 4533.335960189 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 46 / 320
+      From worker 2:	Done in 4773.290255721 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 22 / 320
+      From worker 3:	Done in 4492.994059679 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 31 / 320
+      From worker 4:	Done in 4515.917476417 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 39 / 320
+      From worker 5:	Done in 4581.855059861 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 47 / 320
+      From worker 2:	Done in 4626.068710316 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 23 / 320
+      From worker 4:	Done in 4484.951605932 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 40 / 320
+      From worker 3:	Done in 4501.530894375 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 32 / 320
+      From worker 5:	Done in 4636.389784065 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 48 / 320
+      From worker 2:	Done in 4568.664374229 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 24 / 320
+      From worker 3:	Done in 4513.721224856 seconds
+      From worker 3:	Benchmarking...
+      From worker 4:	Done in 4529.089024349 seconds
+      From worker 4:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 33 / 320
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 41 / 320
+      From worker 5:	Done in 4565.254180827 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 49 / 320
+      From worker 2:	Done in 4610.935300137 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 25 / 320
+      From worker 3:	Done in 4462.980657571 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 34 / 320
+      From worker 4:	Done in 4564.961232349 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 42 / 320
+      From worker 5:	Done in 4513.384008871 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 50 / 320
+      From worker 2:	Done in 4699.657941328 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 26 / 320
+      From worker 3:	Done in 4461.806037337 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 35 / 320
+      From worker 4:	Done in 4555.713512102 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 43 / 320
+      From worker 5:	Done in 4643.193087768 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 51 / 320
+      From worker 2:	Done in 4592.19581883 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 27 / 320
+      From worker 3:	Done in 4443.512215608 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 36 / 320
+      From worker 4:	Done in 4552.975342672 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 44 / 320
+      From worker 5:	Done in 4572.073032206 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 52 / 320
+      From worker 2:	Done in 4630.48257867 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 28 / 320
+      From worker 3:	Done in 4390.617995472 seconds
+      From worker 3:	Benchmarking...
+      From worker 4:	Done in 4439.176448225 seconds
+      From worker 4:	Benchmarking...
+      From worker 5:	Done in 4285.01227085 seconds
+      From worker 5:	Benchmarking...
+      From worker 2:	Done in 4109.70119564 seconds
+      From worker 2:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 39 / 320
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 31 / 320
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 47 / 320
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 55 / 320
+      From worker 3:	Done in 4473.743804725 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 40 / 320
+      From worker 5:	Done in 4540.701513368 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 56 / 320
+      From worker 4:	Done in 4551.430416565 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 48 / 320
+      From worker 2:	Done in 4721.588122396 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 32 / 320
+      From worker 3:	Done in 4440.830336026 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 41 / 320
+      From worker 5:	Done in 4533.133826097 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 57 / 320
+      From worker 4:	Done in 4604.674565378 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 49 / 320
+      From worker 2:	Done in 4729.341097841 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 33 / 320
+      From worker 3:	Done in 4449.758254717 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 42 / 320
+      From worker 5:	Done in 4550.730383973 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 58 / 320
+      From worker 4:	Done in 4547.130082551 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 50 / 320
+      From worker 2:	Done in 4709.615222637 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 34 / 320
+      From worker 3:	Done in 4477.568914721 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 43 / 320
+      From worker 4:	Done in 4536.178792857 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 51 / 320
+      From worker 5:	Done in 4633.247743939 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 59 / 320
+      From worker 2:	Done in 4606.870284601 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 35 / 320
+      From worker 3:	Done in 4461.486853081 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 44 / 320
+      From worker 4:	Done in 4591.882418812 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 52 / 320
+      From worker 5:	Done in 4655.94516177 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 60 / 320
+      From worker 2:	Done in 4585.902734223 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 36 / 320
+      From worker 3:	Done in 4429.843469867 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 45 / 320
+      From worker 4:	Done in 4566.092195754 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 53 / 320
+      From worker 5:	Done in 4545.217229814 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 61 / 320
+      From worker 2:	Done in 4658.365549712 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 37 / 320
+      From worker 3:	Done in 4406.042570712 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 46 / 320
+      From worker 4:	Done in 4567.890943589 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 54 / 320
+      From worker 5:	Done in 4609.554912376 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 62 / 320
+      From worker 2:	Done in 4624.992578938 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 38 / 320
+      From worker 3:	Done in 4394.777416085 seconds
+      From worker 3:	Benchmarking...
+      From worker 4:	Done in 4328.806053441 seconds
+      From worker 4:	Benchmarking...
+      From worker 5:	Done in 4358.382081407 seconds
+      From worker 5:	Benchmarking...
+      From worker 2:	Done in 4028.558437469 seconds
+      From worker 2:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 49 / 320
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 57 / 320
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 65 / 320
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 41 / 320
+      From worker 3:	Done in 4481.095216352 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 50 / 320
+      From worker 4:	Done in 4515.79366265 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 58 / 320
+      From worker 5:	Done in 4604.825884922 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 66 / 320
+      From worker 2:	Done in 4631.971849397 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 42 / 320
+      From worker 3:	Done in 4454.69270277 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 51 / 320
+      From worker 4:	Done in 4541.042624957 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 59 / 320
+      From worker 2:	Done in 4585.941897436 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 43 / 320
+      From worker 5:	Done in 4671.097497209 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 67 / 320
+      From worker 3:	Done in 4463.900044286 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 52 / 320
+      From worker 4:	Done in 4549.05902117 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 60 / 320
+      From worker 2:	Done in 4594.817346493 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 44 / 320
+      From worker 5:	Done in 4629.174197469 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 68 / 320
+      From worker 3:	Done in 4445.55589112 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 53 / 320
+      From worker 4:	Done in 4521.933091278 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 61 / 320
+      From worker 2:	Done in 4629.636591312 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 45 / 320
+      From worker 5:	Done in 4645.044205629 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 69 / 320
+      From worker 3:	Done in 4437.075598742 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 54 / 320
+      From worker 4:	Done in 4568.140212258 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 62 / 320
+      From worker 2:	Done in 4650.80522662 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 46 / 320
+      From worker 5:	Done in 4625.424819691 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 70 / 320
+      From worker 3:	Done in 4423.304471741 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 55 / 320
+      From worker 4:	Done in 4590.056963051 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 63 / 320
+      From worker 2:	Done in 4596.33078225 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 47 / 320
+      From worker 5:	Done in 4614.376348426 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 71 / 320
+      From worker 3:	Done in 4411.559001585 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 56 / 320
+      From worker 4:	Done in 4577.118680684 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 64 / 320
+      From worker 2:	Done in 4602.949084903 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 48 / 320
+      From worker 5:	Done in 4573.954116238 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 72 / 320
+      From worker 3:	Done in 4388.942823204 seconds
+      From worker 3:	Benchmarking...
+      From worker 4:	Done in 4342.917605475 seconds
+      From worker 4:	Benchmarking...
+      From worker 5:	Done in 4121.565084147 seconds
+      From worker 5:	Benchmarking...
+      From worker 2:	Done in 4273.665173399 seconds
+      From worker 2:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 59 / 320
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 75 / 320
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 67 / 320
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 51 / 320
+      From worker 3:	Done in 4469.140060587 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 60 / 320
+      From worker 5:	Done in 4561.235279141 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 76 / 320
+      From worker 4:	Done in 4576.001341987 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 68 / 320
+      From worker 2:	Done in 4624.513600707 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 52 / 320
+      From worker 3:	Done in 4490.985995272 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 61 / 320
+      From worker 5:	Done in 4559.75284334 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 77 / 320
+      From worker 4:	Done in 4549.64883357 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 69 / 320
+      From worker 2:	Done in 4623.435889318 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 53 / 320
+      From worker 3:	Done in 4442.369603563 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 62 / 320
+      From worker 4:	Done in 4580.636889153 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 70 / 320
+      From worker 5:	Done in 4591.237157899 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 78 / 320
+      From worker 2:	Done in 4577.362346154 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 54 / 320
+      From worker 3:	Done in 4474.024771626 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 63 / 320
+      From worker 4:	Done in 4537.406983258 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 71 / 320
+      From worker 5:	Done in 4590.402378176 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 79 / 320
+      From worker 2:	Done in 4597.583221997 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 55 / 320
+      From worker 3:	Done in 4485.115783361 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 64 / 320
+      From worker 4:	Done in 4549.169844339 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 72 / 320
+      From worker 5:	Done in 4536.464969958 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 80 / 320
+      From worker 2:	Done in 4654.158505795 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 56 / 320
+      From worker 3:	Done in 4439.701248999 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 65 / 320
+      From worker 4:	Done in 4524.945468899 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 73 / 320
+      From worker 5:	Done in 4553.84274268 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 81 / 320
+      From worker 2:	Done in 4630.844896602 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 57 / 320
+      From worker 3:	Done in 4467.22140905 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 66 / 320
+      From worker 4:	Done in 4546.688609595 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 74 / 320
+      From worker 5:	Done in 4508.855234175 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 82 / 320
+      From worker 2:	Done in 4612.914781075 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 58 / 320
+      From worker 3:	Done in 4397.161272275 seconds
+      From worker 3:	Benchmarking...
+      From worker 5:	Done in 4329.239943675 seconds
+      From worker 5:	Benchmarking...
+      From worker 4:	Done in 4400.0177301 seconds
+      From worker 4:	Benchmarking...
+      From worker 2:	Done in 4132.93260734 seconds
+      From worker 2:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 69 / 320
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 61 / 320
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 85 / 320
+      From worker 4:	agent 77 / 320
+      From worker 3:	Done in 4452.088168847 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 70 / 320
+      From worker 2:	Done in 4536.244835654 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 62 / 320
+      From worker 4:	Done in 4582.12870252 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 78 / 320
+      From worker 5:	Done in 4637.122574812 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 86 / 320
+      From worker 3:	Done in 4493.562724737 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 71 / 320
+      From worker 2:	Done in 4577.008424667 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 63 / 320
+      From worker 4:	Done in 4572.633888502 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 79 / 320
+      From worker 5:	Done in 4544.94521038 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 87 / 320
+      From worker 3:	Done in 4469.527055825 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 72 / 320
+      From worker 2:	Done in 4575.332457974 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 64 / 320
+      From worker 4:	Done in 4577.7621902 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 80 / 320
+      From worker 5:	Done in 4562.711802578 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 88 / 320
+      From worker 3:	Done in 4470.962681005 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 73 / 320
+      From worker 2:	Done in 4538.089127982 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 65 / 320
+      From worker 4:	Done in 4547.04706912 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 81 / 320
+      From worker 5:	Done in 4603.481200771 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 89 / 320
+      From worker 3:	Done in 4473.381359808 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 74 / 320
+      From worker 4:	Done in 4541.596340179 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 82 / 320
+      From worker 5:	Done in 4511.779411574 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 90 / 320
+      From worker 2:	Done in 4686.103325081 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 66 / 320
+      From worker 3:	Done in 4433.819162728 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 75 / 320
+      From worker 4:	Done in 4546.313097769 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 83 / 320
+      From worker 5:	Done in 4595.65023212 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 91 / 320
+      From worker 2:	Done in 4594.138335631 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 67 / 320
+      From worker 3:	Done in 4431.624621232 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 76 / 320
+      From worker 4:	Done in 4550.25165204 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 84 / 320
+      From worker 5:	Done in 4501.303901734 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 92 / 320
+      From worker 2:	Done in 4661.431217911 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 68 / 320
+      From worker 3:	Done in 4393.265407588 seconds
+      From worker 3:	Benchmarking...
+      From worker 4:	Done in 4368.467444672 seconds
+      From worker 4:	Benchmarking...
+      From worker 5:	Done in 4381.021396506 seconds
+      From worker 5:	Benchmarking...
+      From worker 2:	Done in 4268.657890758 seconds
+      From worker 2:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 79 / 320
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 95 / 320
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 87 / 320
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 71 / 320
+      From worker 3:	Done in 4506.883562845 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 80 / 320
+      From worker 4:	Done in 4525.747617759 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 88 / 320
+      From worker 5:	Done in 4577.492073287 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 96 / 320
+      From worker 2:	Done in 4631.351927905 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 72 / 320
+      From worker 3:	Done in 4473.130319491 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 81 / 320
+      From worker 4:	Done in 4575.747875549 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 89 / 320
+      From worker 2:	Done in 4549.442958304 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 73 / 320
+      From worker 5:	Done in 4622.427354681 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 97 / 320
+      From worker 3:	Done in 4450.298827174 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 82 / 320
+      From worker 4:	Done in 4567.609226729 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 90 / 320
+      From worker 5:	Done in 4547.669548499 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 98 / 320
+      From worker 2:	Done in 4629.629820004 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 74 / 320
+      From worker 3:	Done in 4462.294302902 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 83 / 320
+      From worker 4:	Done in 4557.503160587 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 91 / 320
+      From worker 5:	Done in 4590.038827436 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 99 / 320
+      From worker 2:	Done in 4574.458952518 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 75 / 320
+      From worker 3:	Done in 4469.747210696 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 84 / 320
+      From worker 4:	Done in 4551.18265624 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 92 / 320
+      From worker 5:	Done in 4562.907655459 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 100 / 320
+      From worker 2:	Done in 4642.118996725 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 76 / 320
+      From worker 3:	Done in 4432.377811181 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 85 / 320
+      From worker 4:	Done in 4515.16735289 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 93 / 320
+      From worker 5:	Done in 4574.4132257 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 101 / 320
+      From worker 2:	Done in 4600.360120432 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 77 / 320
+      From worker 3:	Done in 4448.32041246 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 86 / 320
+      From worker 4:	Done in 4534.815449888 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 94 / 320
+      From worker 5:	Done in 4509.524845307 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 102 / 320
+      From worker 2:	Done in 4638.320499374 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 78 / 320
+      From worker 3:	Done in 4380.250717814 seconds
+      From worker 3:	Benchmarking...
+      From worker 4:	Done in 4391.63156583 seconds
+      From worker 4:	Benchmarking...
+      From worker 5:	Done in 4296.413664172 seconds
+      From worker 5:	Benchmarking...
+      From worker 2:	Done in 4198.951845193 seconds
+      From worker 2:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 105 / 320
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 97 / 320
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 81 / 320
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 89 / 320
+      From worker 3:	Done in 4481.215752284 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 90 / 320
+      From worker 4:	Done in 4543.175092248 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 98 / 320
+      From worker 5:	Done in 4582.58359842 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 106 / 320
+      From worker 2:	Done in 4600.285536236 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 82 / 320
+      From worker 3:	Done in 4458.048544905 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 91 / 320
+      From worker 4:	Done in 4560.538521578 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 99 / 320
+      From worker 5:	Done in 4566.072319557 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 107 / 320
+      From worker 2:	Done in 4609.869200859 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 83 / 320
+      From worker 3:	Done in 4469.394693478 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 92 / 320
+      From worker 4:	Done in 4561.87781759 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 100 / 320
+      From worker 5:	Done in 4597.938485252 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 108 / 320
+      From worker 2:	Done in 4548.522660384 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 84 / 320
+      From worker 3:	Done in 4467.408354845 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 93 / 320
+      From worker 4:	Done in 4541.029302597 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 101 / 320
+      From worker 5:	Done in 4487.490942645 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 109 / 320
+      From worker 2:	Done in 4698.604394749 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 85 / 320
+      From worker 3:	Done in 4441.088411296 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 94 / 320
+      From worker 5:	Done in 4492.082879261 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 110 / 320
+      From worker 4:	Done in 4570.46486589 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 102 / 320
+      From worker 2:	Done in 4716.771465687 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 86 / 320
+      From worker 3:	Done in 4392.299404503 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 95 / 320
+      From worker 5:	Done in 4493.797551151 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 111 / 320
+      From worker 4:	Done in 4571.174686805 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 103 / 320
+      From worker 2:	Done in 4714.547465154 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 87 / 320
+      From worker 3:	Done in 4430.893059163 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 96 / 320
+      From worker 5:	Done in 4498.420658493 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 112 / 320
+      From worker 4:	Done in 4530.223268955 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 104 / 320
+      From worker 2:	Done in 4665.933126771 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 88 / 320
+      From worker 3:	Done in 4431.504858349 seconds
+      From worker 3:	Benchmarking...
+      From worker 5:	Done in 4333.887985866 seconds
+      From worker 5:	Benchmarking...
+      From worker 4:	Done in 4309.839600751 seconds
+      From worker 4:	Benchmarking...
+      From worker 2:	Done in 3970.338174197 seconds
+      From worker 2:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=80.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 99 / 320
+      From worker 4:	Solving LT= 8, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 107 / 320
+      From worker 5:	Solving LT= 2, b=75.0, K=80.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 115 / 320
+      From worker 2:	Solving LT= 8, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 91 / 320
+      From worker 3:	Done in 4476.507448283 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=1280.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 100 / 320
+      From worker 5:	Done in 4540.244750207 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=1280.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 116 / 320
+      From worker 4:	Done in 4572.534630529 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 4, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 108 / 320
+      From worker 2:	Done in 4625.698733921 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 4, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 92 / 320
+      From worker 3:	Done in 4465.731231399 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.1, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 101 / 320
+      From worker 5:	Done in 4567.479079861 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.1, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 117 / 320
+      From worker 4:	Done in 4562.096885425 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 1, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 109 / 320
+      From worker 2:	Done in 4632.6475819 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 1, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 93 / 320
+      From worker 3:	Done in 4497.100918761 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.3, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 102 / 320
+      From worker 4:	Done in 4523.918760799 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 0, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 110 / 320
+      From worker 5:	Done in 4600.084738949 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.3, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 118 / 320
+      From worker 2:	Done in 4593.839188888 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 0, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 94 / 320
+      From worker 3:	Done in 4472.677815728 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 103 / 320
+      From worker 4:	Done in 4567.231913838 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 111 / 320
+      From worker 5:	Done in 4572.083225165 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 119 / 320
+      From worker 2:	Done in 4579.246828611 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=10.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 95 / 320
+      From worker 3:	Done in 4462.551980973 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 104 / 320
+      From worker 4:	Done in 4569.303193932 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 112 / 320
+      From worker 5:	Done in 4605.1635773 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 120 / 320
+      From worker 2:	Done in 4611.172312424 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 96 / 320
+      From worker 3:	Done in 4443.139803426 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 105 / 320
+      From worker 4:	Done in 4568.108595235 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=100.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 113 / 320
+      From worker 5:	Done in 4640.914386484 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 121 / 320
+      From worker 2:	Done in 4553.356319019 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=50.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 97 / 320
+      From worker 3:	Done in 4394.45585119 seconds
+      From worker 3:	Benchmarking...
+      From worker 3:	Solving LT= 2, b=25.0, K=320.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 3:	agent 106 / 320
+      From worker 4:	Done in 4561.128470467 seconds
+      From worker 4:	Benchmarking...
+      From worker 4:	Solving LT= 2, b=75.0, K=0.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 4:	agent 114 / 320
+      From worker 5:	Done in 4565.804809538 seconds
+      From worker 5:	Benchmarking...
+      From worker 5:	Solving LT= 2, b=75.0, K=320.0, CV = 0.2, lostsales = true, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 5:	agent 122 / 320
+      From worker 2:	Done in 4599.925008197 seconds
+      From worker 2:	Benchmarking...
+      From worker 2:	Solving LT= 2, b=25.0, K=0.0, CV = 0.2, lostsales = false, policy = sSPolicy(), μ_distribution = Uniform{Float64}(a=0.0, b=20.0)
+      From worker 2:	agent 98 / 320
+      From worker 3:	Done in 4393.438727376 seconds
+      From worker 3:	Benchmarking...
+      From worker 4:	Done in 4383.560766241 seconds
+      From worker 4:	Benchmarking...
+      From worker 5:	Done in 4262.760261323 seconds
+      From worker 5:	Benchmarking...
+      From worker 2:	Done in 4290.336469356 seconds
+      From worker 2:	Benchmarking...

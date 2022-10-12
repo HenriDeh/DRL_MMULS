@@ -1,6 +1,6 @@
-cd(".")
+#cd("./DRL_MMULS")
+#println(pwd())
 using Pkg; Pkg.activate("."); Pkg.instantiate()
-
 using DRL_MMULS
 using Distributions, Flux, BSON, CSV, DataFrames, ProgressMeter, Random
 using CUDA
@@ -68,6 +68,7 @@ i_setups = repeat(i_setups, 2)
 i_CVs = repeat(i_CVs, 2)
 i_lostsales = repeat(lostsales, inner = n_instances)
 i_horizons = repeat(i_horizons, 2)
+n_instances *= 2
 
 #load forecasts
 forecast_df = CSV.read("data/single-item/forecasts.csv", DataFrame)
@@ -91,10 +92,10 @@ n_epochs = 3
 
 #Learning rate schedules
 warmup_iterations = 2000
-actor_updates = stop_iterations*((n_actors*steps_per_episode)÷batch_size)
+actor_updates = stop_iterations*n_actors*steps_per_episode÷batch_size
 critic_updates = actor_updates*n_epochs
 warmup = Int(round(warmup_iterations/stop_iterations*actor_updates))
-actor_warmup = Triangle(λ0 = 1f-6, λ1 = 1f-5, period = 2*warmup)
-actor_sinexp = SinExp(λ0 = 1f-5, λ1 = 1f-4, period = (actor_updates-2*warmup)÷5, γ = 1f0/10^(1f0/(0.5f0actor_updates)))
-actor_schedule = Sequence(actor_warmup => warmup, actor_sinexp => actor_updates - 2*warmup, Shifted(actor_warmup, warmup) => warmup)
-critic_schedule = SinExp(λ0 = 1f-4, λ1 = 1f-3, period = (actor_updates-2*warmup)÷5*n_epochs, γ = 1f0/10^(1f0/0.5f0critic_updates))
+actor_warmup = Triangle(λ0 = 1f-6, λ1 = 1f-4, period = 2*warmup)
+actor_sinexp = Exp(λ = 1f-4, γ = (1f0/10)^(1f0/(actor_updates-warmup)))
+actor_schedule = Sequence(actor_warmup => warmup, actor_sinexp => actor_updates - warmup)
+critic_schedule = Exp(λ = 1f-4, γ = 1f0/10^(1f0/(critic_updates)))
