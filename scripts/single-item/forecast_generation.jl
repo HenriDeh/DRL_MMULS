@@ -29,7 +29,7 @@ end
 s = 0.5
 global ID += 1
 fc = LinRange(s*μ, (1 + s)*μ, H) |> collect
-CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Growth_$s", forecast = [fc]), append = true)
+CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Growth", forecast = [fc]), append = true)
 
 
 
@@ -38,4 +38,4 @@ CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Growth_$
 
 global ID += 1
 fc = LinRange((2-s)*μ, s*μ, H) |> collect
-CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Decline_$s", forecast = [fc]), append = true)
+CSV.write("data/single-item/forecasts.csv", DataFrame(ID = ID, trend = "Decline", forecast = [fc]), append = true)

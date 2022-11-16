@@ -30,7 +30,7 @@ shortages_ls = [50, 75, 100]
 setups = [0., 80., 1280.]
 CVs = [0.1, 0.3]
 lostsales = [false, true]
-horizons = [32, 16, 8, 4]
+horizons = [16, 8, 4]
 #Iterators
 n_instances = sum(length.([leadtimes, shortages_b, setups, CVs, horizons]))
 i_leadtimes = fill(leadtime_d, n_instances)
@@ -86,16 +86,16 @@ var_discount = 0.9
 #hyperparameters
 steps_per_episode = 52
 batch_size = 256
-n_actors = 50
-stop_iterations = 15000
-n_epochs = 3
+n_actors = 30
+stop_iterations = 10000
+n_epochs = 5
 
 #Learning rate schedules
 warmup_iterations = 2000
 actor_updates = stop_iterations*n_actors*steps_per_episode÷batch_size
 critic_updates = actor_updates*n_epochs
 warmup = Int(round(warmup_iterations/stop_iterations*actor_updates))
-actor_warmup = Triangle(λ0 = 1f-6, λ1 = 1f-4, period = 2*warmup)
+actor_warmup = Exp(λ = 1f-6, γ = 100^(1f0/warmup))
 actor_sinexp = Exp(λ = 1f-4, γ = (1f0/10)^(1f0/(actor_updates-warmup)))
 actor_schedule = Sequence(actor_warmup => warmup, actor_sinexp => actor_updates - warmup)
-critic_schedule = Exp(λ = 1f-4, γ = 1f0/10^(1f0/(critic_updates)))
+critic_schedule = Sequence(1f-4 => critic_updates)

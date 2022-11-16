@@ -31,35 +31,37 @@ function test_ss_policy(env::SingleItemMMFE, s, S, n=1000)
     return mean(returns), std(returns), time/n
 end
 
-function test_rolling_ss_policy(env::InventorySystem, n=1000; horizon::Int)
+function test_rolling_ss_policy(env::InventorySystem, n=1000)
     envs = [deepcopy(env) for i in 1:n]
     returns = zeros(size(envs))
-    master_instance = to_instance(env, 0.99)
     time = 0.
-    for t in 1:env.T
-        instance = to_instance(env, 0.99, t:t+horizon-1)
-        instance.backlog = true
-        time += @elapsed Scarf.DP_sS(instance, 1., zero_boundary = false)
-        master_instance.s[t] = instance.s[1]
-        master_instance.S[t] = instance.S[1]
-    end
-    Threads.@threads for (id,environment) in collect(enumerate(envs))
+    #master_instance = to_instance(env, 0.99)
+    s = fill(0., env.T)
+    S = fill(0., env.T)
+    for (id,environment) in collect(enumerate(envs))
         for t in 1:env.T
-            environment([master_instance.s[t], master_instance.S[t]])
+            if id == 1
+                instance = to_instance(environment, 0.99)
+                instance.backlog = true
+                time += @elapsed Scarf.DP_sS(instance, 1., zero_boundary = false)
+                s[t] = instance.s[1]
+                S[t] = instance.S[1]
+            end
+            environment([s[t], S[t]])
             returns[id] -= reward(environment)
         end
     end
     return mean(returns), std(returns), time/n
 end
 
-function test_rolling_ss_policy(env::SingleItemMMFE, n =10; horizon::Int)
+function test_rolling_ss_policy(env::SingleItemMMFE, n =10)
     envs = [deepcopy(env) for i in 1:n]
     returns = zeros(size(envs))
     time = 0.
     #master_instance = to_instance(env, 0.99)
     Threads.@threads for (id,environment) in collect(enumerate(envs))
         for t in 1:env.T
-            instance = to_instance(environment.env, 0.99, t:t+horizon-1)
+            instance = to_instance(environment.env, 0.99)
             instance.backlog = true
             time += @elapsed Scarf.DP_sS(instance, 1., zero_boundary = false)
             environment([instance.s[1], instance.S[1]])
@@ -84,7 +86,7 @@ function test_agent(agent_d, env, n_sims = 1000)
     return mean(returns), std(returns)
 end
 
-function test_simple_ss_policy(env::InventorySystem, n = 1000)
+function test_simple_ss_policy(env::InventorySystem, n = 1000; horizon=32)
     envs = [deepcopy(env) for i in 1:n]
     returns = zeros(size(envs))
     time = @elapsed begin 
@@ -92,7 +94,7 @@ function test_simple_ss_policy(env::InventorySystem, n = 1000)
             for t in 1:env.T
                 market = environment.bom[1].market
                 CV = InventoryModels.cv(market.demand_dist)
-                fc = market.forecasts
+                fc = market.forecasts[1:horizon]
                 L = environment.bom[1].sources[1].leadtime.leadtime
                 LTDmean = sum(fc[1:1+L])
                 LTDstd = sqrt(sum((fc[i]*CV)^2 for i in 1:1+L))
@@ -111,7 +113,7 @@ function test_simple_ss_policy(env::InventorySystem, n = 1000)
     return mean(returns), std(returns), time/n
 end 
 
-function test_simple_ss_policy(env::SingleItemMMFE, n = 1000)
+function test_simple_ss_policy(env::SingleItemMMFE, n = 1000; horizon = 32)
     envs = [deepcopy(env) for i in 1:n]
     returns = zeros(size(envs))
     time = @elapsed begin 
@@ -119,7 +121,7 @@ function test_simple_ss_policy(env::SingleItemMMFE, n = 1000)
             for t in 1:env.T
                 market = environment.env.bom[1].market
                 CV = InventoryModels.cv(market.demand_dist)
-                fc = market.forecasts
+                fc = market.forecasts[1:horizon]
                 L = environment.env.bom[1].sources[1].leadtime.leadtime
                 LTDmean = sum(fc[1:1+L])
                 LTDstd = sqrt(sum((fc[i]*CV)^2 for i in 1:1+L))

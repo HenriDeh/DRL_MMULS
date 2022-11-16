@@ -124,12 +124,14 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
                 gsc = gradient(psc) do
                     L_value(agent, s, tv)    
                 end
+                grad_norm!(gsc, 0.5f0)
                 Flux.update!(agent.critic_optimiser, psc, gsc)
                 if i == 1
                     psa = Flux.params(agent.actor)
                     gsa = gradient(psa) do
                         L_clip(agent, s, a, ad, alp)    
                     end
+                    grad_norm!(gsa, 0.5f0)
                     Flux.update!(agent.actor_optimiser, psa, gsa)
                 end
             end
@@ -144,4 +146,14 @@ function Base.run(agent::PPOPolicy, env; stop_iterations::Int, hook = (x...) -> 
                                     ("Actor std ", last(agent.loss_entropy)), 
                                     ("√Critic loss", last(agent.loss_critic))])
     end
+end
+
+function grad_norm!(grad, max_norm)
+    n = norm(grad)
+    if n > max_norm
+        for g in grad
+            rmul!(g, max_norm/n)
+        end
+    end
+    return grad
 end
