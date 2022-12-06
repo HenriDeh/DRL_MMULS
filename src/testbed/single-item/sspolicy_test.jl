@@ -41,7 +41,7 @@ function test_rolling_ss_policy(env::InventorySystem, n=1000)
     for (id,environment) in collect(enumerate(envs))
         for t in 1:env.T
             if id == 1
-                instance = to_instance(environment, 0.99)
+                instance = to_instance(environment, 0.99, 32)
                 instance.backlog = true
                 time += @elapsed Scarf.DP_sS(instance, 1., zero_boundary = false)
                 s[t] = instance.s[1]
