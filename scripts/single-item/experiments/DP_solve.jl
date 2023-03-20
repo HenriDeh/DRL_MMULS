@@ -62,7 +62,7 @@ function solve_adi_DP()
         scarf_df = DataFrame(lostsales = Bool[], first_var = Float64[], var_discount = Float64[], forecast_id = Int[], opt_cost = Float64[], opt_MC_std = Float64[], solve_time_s = Float64[])
         for (f_ID, forecast) in collect(enumerate(forecasts))
             test_env = sl_sip(holding, shortage, setup, 0, forecast, leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, policy = policy, periods = test_periods, d_type = d_type) |> e -> SingleItemMMFE(e, mmfe_update)
-            cost, std, time = test_rolling_ss_policy(test_env, 10)
+            cost, std, time = test_rolling_ss_policy(test_env, 1000)
             push!(scarf_df, [lostsale, first_var, var_discount, f_ID, cost, std, time])
         end
         CSV.write("data/single-item/scarf_testbed_adi_DP.csv", scarf_df, append = true)
