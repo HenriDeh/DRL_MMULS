@@ -29,8 +29,6 @@ Flux.@functor Split
   
 (m::Split)(x::AbstractArray) = map(f -> f(x), m.paths)
 
-orthosmall(dims...) = Flux.orthogonal(dims..., gain = 0.01)
-
 """
     PPOPolicy(env; <keyword arguments>)
 
@@ -60,8 +58,8 @@ function PPOPolicy(env; actor_optimiser, critic_optimiser, γ, λ, clip_range, e
         Dense(n_hidden, n_hidden, gelu, init=Flux.orthogonal),
         Dense(n_hidden, n_hidden, gelu, init=Flux.orthogonal),
         Split(
-            Dense(n_hidden, action_size(env), init= orthosmall),
-            Dense(n_hidden, action_size(env), softplus, init=orthosmall)
+            Dense(n_hidden, action_size(env), identity, bias = fill(20f0, action_size(env)),  init= Flux.orthogonal),
+            Dense(n_hidden, action_size(env), softplus, bias = fill(20f0, action_size(env)), init=Flux.orthogonal)
             )
     ) |> device
 
