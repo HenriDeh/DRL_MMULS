@@ -1,15 +1,20 @@
 export test_ss_policy, test_agent, test_rolling_ss_policy, test_simple_ss_policy
 
-function test_ss_policy(env::InventorySystem, s, S, n=1000)
+function test_ss_policy(_env::Union{InventorySystem, TestEnvironment}, s, S, n=1000)
+    env = _env isa TestEnvironment ? _env.env : _env
     instance = to_instance(env, 0.99)
-    instance.backlog = true
-    time = @elapsed Scarf.DP_sS(instance, 1., zero_boundary = true)
+    time = @elapsed Scarf.DP_sS(instance, 1.)
     envs = [deepcopy(env) for i in 1:n]
     returns = zeros(size(envs))
     Threads.@threads for (id,environment) in collect(enumerate(envs))
         for t in 1:env.T
             environment([s[t], S[t]])
             returns[id] -= reward(environment)
+        end
+    end
+    if _env isa TestEnvironment
+        for env in envs
+            _env.logger(env, log_id = _env.count)
         end
     end
     return mean(returns), std(returns), time
@@ -22,8 +27,7 @@ function test_ss_policy(env::SingleItemMMFE, s, S, n=1000)
     Threads.@threads for (id,environment) in collect(enumerate(envs))
         for t in 1:environment.T
             instance = to_instance(environment, 0.99)
-            instance.backlog = true
-            time += @elapsed Scarf.DP_sS(instance, 1., zero_boundary = true)
+            time += @elapsed Scarf.DP_sS(instance, 1.)
             environment([s[t], S[t]])
             returns[id] -= reward(environment)
         end
@@ -31,10 +35,10 @@ function test_ss_policy(env::SingleItemMMFE, s, S, n=1000)
     return mean(returns), std(returns), time/n
 end
 
-function test_rolling_ss_policy(env::InventorySystem, n=1000)
+function test_rolling_ss_policy(_env::Union{InventorySystem, TestEnvironment{<:InventorySystem}}, n=1000)
+    env = _env isa TestEnvironment ? _env.env : _env
     envs = [deepcopy(env) for i in 1:n]
     returns = zeros(size(envs))
-    time = 0.
     #master_instance = to_instance(env, 0.99)
     s = fill(0., env.T)
     S = fill(0., env.T)
@@ -42,8 +46,7 @@ function test_rolling_ss_policy(env::InventorySystem, n=1000)
         for t in 1:env.T
             if id == 1
                 instance = to_instance(environment, 0.99, 32)
-                instance.backlog = true
-                time += @elapsed Scarf.DP_sS(instance, 1., zero_boundary = false)
+                Scarf.DP_sS(instance, 1.)
                 s[t] = instance.s[1]
                 S[t] = instance.S[1]
             end
@@ -51,10 +54,16 @@ function test_rolling_ss_policy(env::InventorySystem, n=1000)
             returns[id] -= reward(environment)
         end
     end
-    return mean(returns), std(returns), time/n
+    if _env isa TestEnvironment
+        for env in envs
+            _env.logger(env, log_id = _env.count)
+        end
+    end
+    return mean(returns), std(returns), 0.
 end
 
-function test_rolling_ss_policy(env::SingleItemMMFE, n =10)
+function test_rolling_ss_policy(_env::Union{SingleItemMMFE, TestEnvironment{<:SingleItemMMFE}}, n =50)
+    env = _env isa SingleItemMMFE ? _env : _env.env
     envs = [deepcopy(env) for i in 1:n]
     returns = zeros(size(envs))
     time = 0.
@@ -62,10 +71,14 @@ function test_rolling_ss_policy(env::SingleItemMMFE, n =10)
     Threads.@threads for (id,environment) in collect(enumerate(envs))
         for t in 1:env.T
             instance = to_instance(environment.env, 0.99)
-            instance.backlog = true
-            time += @elapsed Scarf.DP_sS(instance, 1., zero_boundary = false)
+            time += @elapsed Scarf.DP_sS(instance, 1.)
             environment([instance.s[1], instance.S[1]])
             returns[id] -= reward(environment)
+        end
+    end
+    if _env isa TestEnvironment
+        for env in envs
+            _env.logger(env, log_id = _env.count)
         end
     end
     return mean(returns), std(returns), time/n
