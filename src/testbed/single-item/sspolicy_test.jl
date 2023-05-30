@@ -99,7 +99,8 @@ function test_agent(agent_d, env, n_sims = 1000)
     return mean(returns), std(returns)
 end
 
-function test_simple_ss_policy(env::InventorySystem, n = 1000; horizon=32)
+function test_simple_ss_policy(_env::Union{InventorySystem, TestEnvironment{<:InventorySystem}}, n = 1000; horizon=32)
+    env = _env isa InventorySystem ? _env : _env.env
     envs = [deepcopy(env) for i in 1:n]
     returns = zeros(size(envs))
     time = @elapsed begin 
@@ -122,7 +123,12 @@ function test_simple_ss_policy(env::InventorySystem, n = 1000; horizon=32)
                 returns[id] -= reward(environment)
             end
         end
-    end 
+    end
+        if _env isa TestEnvironment
+            for env in envs
+                _env.logger(env, log_id = _env.count)
+            end
+        end 
     return mean(returns), std(returns), time/n
 end 
 

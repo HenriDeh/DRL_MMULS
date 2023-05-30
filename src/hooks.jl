@@ -155,7 +155,7 @@ function (ewd::EntropyWeightDecayer)(agent, env)
     agent.entropy_weight = ewd.schedule(ewd.t)
 end
 
-show_value(ew::EntropyWeightDecayer) = ("Entropy weight ", ew.schedule(ew.t-1))
+show_value(ew::EntropyWeightDecayer) = ("Entropy weight: ", ew.schedule(ew.t-1))
 
 mutable struct EpsilonDecayer
     schedule
