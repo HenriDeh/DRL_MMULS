@@ -31,13 +31,13 @@ function ppo_testbed_adi()
             println("agent $agent_id / $(N*n_instances) using device $devi")
             env = SingleItemMMFE(sl_sip(holding, shortage, setup, 0., μ_distribution, Uniform(-5*(leadtime+1)*(1-lostsale) ,10*(leadtime + 1)), leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = steps_per_episode, policy = policy, d_type = d_type), mmfe_update)
             agent_d = PPOPolicy(env, actor_optimiser = Scheduler(actor_schedule, ADAM()),  critic_optimiser = Scheduler(critic_schedule, ADAM()), n_hidden = 128,
-                        γ = 0.99f0,λ = 0.90f0, clip_range = 0.2f0, entropy_weight = 1f-2, n_actors = n_actors, n_epochs = n_epochs, batch_size = batch_size,
+                        γ = 0.99f0,λ = 0.90f0, clip_range = 0.2f0, entropy_weight = 1f-3, n_actors = n_actors, n_epochs = n_epochs, batch_size = batch_size,
                         target_function = TD1_target, device = gpu)
             tester = TestEnvironment(SingleItemMMFE(sl_sip(holding, shortage, setup, 0, forecasts[2], leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = test_periods, d_type = d_type), mmfe_update), 100, 100)
             tester2 = TestEnvironment(SingleItemMMFE(sl_sip(holding, shortage, setup, 0, forecasts[6], leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = test_periods, d_type = d_type), mmfe_update), 100, 100)
             tester3 = TestEnvironment(SingleItemMMFE(sl_sip(holding, shortage, setup, 0, forecasts[1], leadtime*μ, leadtime, lostsales = lostsale, horizon = forecast_horizon, periods = test_periods, d_type = d_type), mmfe_update), 100, 100)
-                        
-            time = @elapsed run(agent_d, env, stop_iterations = stop_iterations, hook = Hook(tester, tester2, tester3, EpsilonDecayer(Shifted(Triangle(λ0 = 0.2, λ1 = 0.05, period = 2*stop_iterations), stop_iterations))), show_progress = false);
+            es = Sequence(Exp(1f-3, 10f0^(1f0/warmup_iterations)) => warmup_iterations, Exp(1f-2, (1f0/100)^(1f0/(stop_iterations-warmup_iterations))) => (stop_iterations - warmup_iterations))
+            time = @elapsed run(agent_d, env, stop_iterations = stop_iterations, hook = Hook(EntropyWeightDecayer(es), tester, tester2, tester3, EpsilonDecayer(Shifted(Triangle(λ0 = 0.2, λ1 = 0.05, period = 2*stop_iterations), stop_iterations))), show_progress = false);
             #test on each forecast
             println("$agent_id done in $time seconds")
             println(lineplot(first.(tester.log)[22:end]))
