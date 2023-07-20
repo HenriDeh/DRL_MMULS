@@ -1,4 +1,4 @@
-*.bson
+#*.bson
 *.png
 ################################################################################
 #                          DrWatson Project Structure                          #
@@ -8,7 +8,7 @@ test.jl
 # Folders to ignore - files may be too large, too many, etc. NOTE: EDIT IF NEEDED.
 data/multi-item
 scripts/multi-item
-data/single-item/agents
+#data/single-item/agents
 data/single-item/backup
 src/dashboard
 src/testbed/multi-item
