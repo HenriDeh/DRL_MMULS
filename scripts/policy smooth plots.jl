@@ -1,3 +1,8 @@
+###=
+#This script randomly selects 20 agents (saved in data/single-item/agents/sdi) and plots their policy output for 104 periods on the Sinusoidal 1 trend.
+#To run the script, clone this repository, start julia at the root the local repository, use `]instantiate` in the REPL to download the dependencies of the project, and execute this file.
+#The figures will be saved in a directory named plots.
+=###
 using DRL_MMULS
 
 using Distributions, Flux, BSON, CSV, DataFrames, CairoMakie, LaTeXStrings
